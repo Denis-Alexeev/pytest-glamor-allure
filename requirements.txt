@@ -1,0 +1,8 @@
+allure-pytest
+allure-python-commons-test
+attrs
+pytest
+tox
+black
+flake8
+flake8-isort
