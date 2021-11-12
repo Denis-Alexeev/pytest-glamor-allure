@@ -15,5 +15,5 @@ setup(
         "attrs",
     ],
     py_modules=["glamor", "pytest_glamor_allure", "pitest"],
-    python_requires=">=3.8",
+    python_requires=">=3.7",
 )

@@ -1,4 +1,6 @@
-from typing import Literal, Union
+from __future__ import annotations
+
+from typing import TYPE_CHECKING, Union
 
 from allure_commons_test.container import (
     has_after as allure_has_after,
@@ -8,8 +10,11 @@ from allure_commons_test.container import (
 from hamcrest import has_key
 from hamcrest.core.matcher import Matcher
 
-afters: Union[str, Literal["afters"]] = "afters"
-befores: Union[str, Literal["befores"]] = "befores"
+if TYPE_CHECKING:
+    from typing import Literal
+
+afters: Union[str, 'Literal["afters"]'] = "afters"
+befores: Union[str, 'Literal["befores"]'] = "befores"
 matchers_with_none = RuntimeError("matchers can not be used if name is None")
 glamor = "glamor"
 
