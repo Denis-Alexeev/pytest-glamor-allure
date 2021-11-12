@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from types import MethodType
-from typing import TYPE_CHECKING, Literal, Optional
+from typing import TYPE_CHECKING, Optional
 import inspect
 import logging
 import os
@@ -8,6 +10,8 @@ from allure import dynamic as allure_dynamic, title as allure_title
 from allure_commons._allure import StepContext
 
 if TYPE_CHECKING:
+    from typing import Literal
+
     from _pytest.fixtures import Config, FixtureFunctionMarker
     from allure_pytest.listener import AllureListener, AllureReporter
 
@@ -140,7 +144,7 @@ def indent_output(indent: bool, override=False):
     return
 
 
-def include_scope_in_title(where: Literal["before", "after"], autouse=False):
+def include_scope_in_title(where: 'Literal["before", "after"]', autouse=False):
     if getattr(include_scope_in_title, "called", False):
         raise RuntimeError("include_scope can be called only once per runtime")
     if where == "before":
