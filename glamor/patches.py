@@ -35,11 +35,6 @@ class PatchHelper:
         cls._add_scope_before_name = False
 
     @classmethod
-    def reset_scope_in_titles(cls):
-        cls._add_scope_after_name = False
-        cls._add_scope_before_name = False
-
-    @classmethod
     def include_autouse_in_titles(cls):
         cls._add_autouse = True
 
@@ -152,7 +147,7 @@ def include_scope_in_title(where: 'Literal["before", "after"]', autouse=False):
     elif where == "after":
         PatchHelper.include_scope_after_titles()
     else:
-        raise RuntimeError('where must be "before" or "after"')
+        raise RuntimeError('"where" argument must be "before" or "after"')
 
     if autouse:
         PatchHelper.include_autouse_in_titles()

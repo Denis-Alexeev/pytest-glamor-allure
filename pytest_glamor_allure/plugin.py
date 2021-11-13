@@ -94,9 +94,6 @@ class GlamorReportLogger:
 
         setup_name_is_str = isinstance(c.glamor_setup_name, str)
         for before in c.befores:
-            if c.glamor_setup_hidden:
-                before.name = None
-                continue
             if c.glamor_setup_name and setup_name_is_str:
                 before.name = c.glamor_setup_name
 
@@ -115,7 +112,6 @@ class GlamorReportLogger:
         glamor_name = c.glamor_teardown_name
         tear_name_is_str = isinstance(c.glamor_teardown_name, str)
         for after in c.afters:
-
             if c.glamor_teardown_name and tear_name_is_str:
                 new_name = re.sub(".*(?=::)", glamor_name, after.name, 1)
                 after.name = new_name
