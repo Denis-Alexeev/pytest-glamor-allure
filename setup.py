@@ -3,22 +3,20 @@ from setuptools import setup
 with open('README.md') as readme:
     long_description = readme.read()
 
-classifiers = (
-    [
-        'Framework :: Pytest',
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Natural Language :: Russian',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3.8',
-        'Programming Language :: Python :: 3.9',
-        'Programming Language :: Python :: 3.10',
-        'Topic :: Software Development :: Testing',
-        'Topic :: Software Development :: Quality Assurance',
-    ],
-)
+classifiers = [
+    'Framework :: Pytest',
+    'Development Status :: 4 - Beta',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: MIT License',
+    'Natural Language :: Russian',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Topic :: Software Development :: Testing',
+    'Topic :: Software Development :: Quality Assurance',
+]
 
 install_requires = [
     'allure-pytest',
