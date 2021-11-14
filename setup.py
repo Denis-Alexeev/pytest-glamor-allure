@@ -34,7 +34,6 @@ entry_points = {
 if __name__ == '__main__':
     setup(
         name='pytest_glamor_allure',
-        version='0.0.1',
         description='Extends allure-pytest functionality',
         long_description=long_description,
         long_description_content_type='text/markdown',
@@ -47,6 +46,7 @@ if __name__ == '__main__':
         py_modules=['glamor', 'pytest_glamor_allure', 'pitest'],
         classifiers=classifiers,
         licence='MIT',
+        setup_requires=['setuptools_scm'],
         install_requires=install_requires,
         entry_points=entry_points,
         python_requires='>=3.7',
