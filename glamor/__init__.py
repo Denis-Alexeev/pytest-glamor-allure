@@ -61,7 +61,6 @@ from allure_pytest.utils import (
 from .patches import (
     Dynamic as dynamic,
     include_scope_in_title,
-    indent_output,
     listener,
     logging_allure_steps,
     pytest_config,

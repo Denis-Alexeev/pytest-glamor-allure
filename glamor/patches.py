@@ -4,7 +4,6 @@ from types import MethodType
 from typing import TYPE_CHECKING, Optional
 import inspect
 import logging
-import os
 
 from allure import dynamic as allure_dynamic, title as allure_title
 from allure_commons._allure import StepContext
@@ -128,15 +127,6 @@ class DynamicFixtureTitle:
 
 class Dynamic(allure_dynamic):
     title = DynamicFixtureTitle()
-
-
-def indent_output(indent: bool, override=False):
-    key_name = "ALLURE_INDENT_OUTPUT"
-    if override and not indent:
-        os.environ.pop(key_name, None)
-        return
-    os.environ[key_name] = "True"
-    return
 
 
 def include_scope_in_title(where: 'Literal["before", "after"]', autouse=False):

@@ -5,7 +5,7 @@ pytest plugin extending allure behaviour
 1. [Why has it been created?](#why_created)
 2. [What is it?](#what_it_is)
 3. [Why is it named "glamor"?](#name_glamor)
-4. [How to install?](#instalation)
+4. [How to install?](#installation)
 5. [What does it can?](#what_does_it_can)
    * [Fancy names for setups and teardowns](#fancy_names)
    * [Hide setup and teardown](#hide_fixture)
@@ -16,25 +16,25 @@ pytest plugin extending allure behaviour
 6. [Pleasant bonus 🎁](#pleasant_bonus)
 7. [How can I help?](#how_help)
 
-## <a name="why_created">Why has it been created?</a>
+## Why has it been created?<a id="why_created"></a>
 
 Just because [allure-python](https://github.com/allure-framework/allure-python) plugin accepts PRs very slowly. Sad but true.
 
 I want to inject more functionality into it. That's why I've decided to create this plugin.
 
-## <a name="what_it_is">What is it?</a>
+## What is it?<a id="what_it_is"></a>
 
 As been said it is pytest plugin (tnx captain 😄). Consider this plugin just as some extension for [allure-pytest](https://github.com/allure-framework/allure-python/tree/master/allure-pytest).
 
 Hopefully, they'll see this code and add some of this functionality later.
 
-## <a name="name_glamor">Why is it named "glamor"?</a>
+## Why is it named "glamor"?<a id="name_glamor"></a>
 
 Because "glamor" is a synonym for "allure". Glamor does the same thing as allure-pytest does but a little more.
 
 The main idea is to just replace imports in you project: instead of `import allure` you type `import glamor as allure` and everything works as before.
 
-## <a name="instalation">How to install?</a>
+## How to install?<a id="installation"></a>
 
 ```shell
 pip install pytest-glamor-allure
@@ -42,11 +42,11 @@ pip install pytest-glamor-allure
 
 That's it.
 
-## <a name="what_does_it_can">What does it can?</a>
+## What does it can?<a id="what_does_it_can"></a>
 
 It's the most interesting part of the ReadMe.
 
-### <a name="fancy_names">Fancy names for setups and teardowns</a>
+### Fancy names for setups and teardowns<a id="fancy_names"></a>
 
 [allure-python](https://github.com/allure-framework/allure-python) provides possibility to set title for fixture with `@allure.title` decorator.
 
@@ -69,7 +69,7 @@ def test_test(fixture):
         pass
 ```
 
-![image.png](./assets/fancy_titles.png)
+![image](https://raw.githubusercontent.com/Denis-Alexeev/pytest-glamor-allure/master/assets/fancy_titles.png)
 
 And moreover. You can dynamically change setup and teardown titles for fixtures.
 
@@ -93,9 +93,9 @@ def test_test(fixture):
         pass
 ```
 
-![image.png](./assets/fancy_dynamic_titles.png)
+![image](https://raw.githubusercontent.com/Denis-Alexeev/pytest-glamor-allure/master/assets/fancy_dynamic_titles.png)
 
-### <a name="hide_fixture">Hide setup and teardown</a>
+### Hide setup and teardown<a id="hide_fixture"></a>
 
 Have you ever wanted to conceal setup and/or teardown from 'allure' report?
 
@@ -128,7 +128,7 @@ def test_test(fixture, fixture2):
         pass
 ```
 
-![image.png](./assets/hide_fixture.png)
+![image](https://raw.githubusercontent.com/Denis-Alexeev/pytest-glamor-allure/master/assets/hide_fixture.png)
 
 But! If any exception (including `Skipped`) is raised, then hidden setups and teardowns are shown forcefully.
 
@@ -162,9 +162,9 @@ def test_test(fixture2, fixture):
         pass
 ```
 
-![image.png](./assets/hide_fixture_failure.png)
+![image](https://raw.githubusercontent.com/Denis-Alexeev/pytest-glamor-allure/master/assets/hide_fixture_failure.png)
 
-### <a name="display_scope">Display 'scope' and 'autouse' fixture parameters in fixture title</a>
+### Display 'scope' and 'autouse' fixture parameters in fixture title<a id="display_scope"></a>
 
 Sometimes it is useful to know which scope this fixture is, and was it called manually or autoused.
 
@@ -195,19 +195,19 @@ def test_test(fixture2):
         pass
 ```
 
-![image.png](./assets/scope_before.png)
+![image](https://github.com/Denis-Alexeev/pytest-glamor-allure/raw/master/assets/scope_before.png)
 
 The big letter is the first letter of the scope name (one of 'function', 'class', 'module', 'package', 'session'). The lower letter 'a' says that fixture was autoused.
 
 If you want to put this information to the end of the title, then just call the function as `allure.include_scope_in_title('after', autouse=True)` and you get:
 
-![image.png](./assets/scope_after.png)
+![image](https://raw.githubusercontent.com/Denis-Alexeev/pytest-glamor-allure/master/assets/scope_after.png)
 
-### <a name="no_more_ending">No more '::0' in teardown title</a>
+### No more '::0' in teardown title<a id="no_more_ending"></a>
 
 Have you noticed '::0' in raw teardown titles? No? That's because glamor strips such ending if fixture has not more than one finalizer.
 
-### <a name="logging_step">Add allure.step titles into logging</a>
+### Add allure.step titles into logging<a id="logging_step"></a>
 
 Have you ever tried to understand when the particular allure step started looking at tests' logs? Of course, you have!
 
@@ -254,7 +254,7 @@ logger.error("end message")
 
 If you need you can turn off this behaviour by calling the function with `None` instead of `logging.Logger` instance.
 
-### <a name="what_else">What else?</a>
+### What else?<a id="what_else"></a>
 
 ```python
 import glamor as allure
@@ -273,11 +273,13 @@ Also via 'glamor' module you get direct access to many objects from:
 * allure_commons.utils
 * allure_pytest.utils
 
-## <a name="pleasant_bonus">Pleasant bonus 🎁</a>
+## Pleasant bonus 🎁<a id="pleasant_bonus"></a>
 
 Type `import pitest as pytest` instead of `import pytest` and get direct access to a bunch of objects from `pytest` and `_pytest` modules.
 
-## <a name="how_help">How can I help?</a>
+## How can I help?<a name="how_help"></a>
 
-Your contribution is highly appreciated. Please read [CONTRIBUTION.md](CONTRIBUTION.md) before you start.
+Your contribution is highly appreciated. Please read [CONTRIBUTING.md](https://github.com/Denis-Alexeev/pytest-glamor-allure/blob/master/CONTRIBUTING.md) before you start.
+
+
 
