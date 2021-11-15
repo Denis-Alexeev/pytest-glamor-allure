@@ -2,6 +2,13 @@
 
 pytest plugin extending allure behaviour
 
+---
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pytest-glamor-allure)
+![PyPI](https://img.shields.io/pypi/v/pytest-glamor-allure)
+![PyPI - Status](https://img.shields.io/pypi/status/pytest-glamor-allure)
+[![Downloads](https://pepy.tech/badge/pytest-glamor-allure)](https://pepy.tech/project/pytest-glamor-allure)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 1. [Why has it been created?](#why_created)
 2. [What is it?](#what_it_is)
 3. [Why is it named "glamor"?](#name_glamor)
@@ -280,6 +287,3 @@ Type `import pitest as pytest` instead of `import pytest` and get direct access 
 ## How can I help?<a name="how_help"></a>
 
 Your contribution is highly appreciated. Please read [CONTRIBUTING.md](https://github.com/Denis-Alexeev/pytest-glamor-allure/blob/master/CONTRIBUTING.md) before you start.
-
-
-
