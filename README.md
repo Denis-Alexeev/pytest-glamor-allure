@@ -3,8 +3,10 @@
 pytest plugin extending allure behaviour
 
 ---
+
 ![](https://github.com/Denis-Alexeev/pytest-glamor-allure/actions/workflows/python-publish.yml/badge.svg)
 ![](https://github.com/Denis-Alexeev/pytest-glamor-allure/actions/workflows/run_lint_and_tests.yml/badge.svg)
+
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/pytest-glamor-allure)](https://pypi.org/project/pytest-glamor-allure/)
 [![PyPI](https://img.shields.io/pypi/v/pytest-glamor-allure)](https://pypi.org/project/pytest-glamor-allure/)
 [![PyPI - Status](https://img.shields.io/pypi/status/pytest-glamor-allure)](https://pypi.org/project/pytest-glamor-allure/)

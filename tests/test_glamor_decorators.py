@@ -299,6 +299,101 @@ class TestOneFixtureOneTest:
             ),
         )
 
+    @pytest.mark.parametrize("with_name", (True, False), ids=with_name_ids)
+    def test_teardown_hidden_yield(
+        self, glamor_pytester, scope, autouse, with_name
+    ):
+        test_name = "test_simple"
+        fixt_name = "simple_yield_fixture"
+        tear = 'bare fixture name is stored in json if "hidden=True"'
+        glamor_pytester.pytester.makepyfile(
+            """
+            import pitest as pytest
+            import glamor as allure
+
+            @pytest.fixture(scope='{scope}', autouse={autouse})
+            @allure.title.teardown({tear}hidden=True)
+            def {fixt_name}():
+                yield 777
+
+            def {test_name}({fixt_name}):
+                pass
+
+            """.format(
+                test_name=test_name,
+                fixt_name=fixt_name,
+                scope=scope,
+                autouse=autouse,
+                tear=f"'{tear}', " if with_name else "",
+            )
+        )
+
+        glamor_pytester.runpytest()
+        report = glamor_pytester.allure_report
+
+        assert_that(
+            report,
+            has_test_case(
+                test_name,
+                has_container(
+                    report,
+                    not_(has_glamor_befores()),
+                    not_(has_before(tear)),
+                    has_before(fixt_name),
+                    not_(has_after()),
+                    not_(has_glamor_afters(tear)),
+                    has_glamor_afters(f'{fixt_name}::0'),
+                ),
+            ),
+        )
+
+    @pytest.mark.parametrize("with_name", (True, False), ids=with_name_ids)
+    def test_teardown_hidden_return(
+        self, glamor_pytester, scope, autouse, with_name
+    ):
+        test_name = "test_simple"
+        fixt_name = "simple_yield_fixture"
+        tear = 'bare fixture name is stored in json if "hidden=True"'
+        glamor_pytester.pytester.makepyfile(
+            """
+            import pitest as pytest
+            import glamor as allure
+
+            @pytest.fixture(scope='{scope}', autouse={autouse})
+            @allure.title.teardown({tear}hidden=True)
+            def {fixt_name}():
+                return 777
+
+            def {test_name}({fixt_name}):
+                pass
+
+            """.format(
+                test_name=test_name,
+                fixt_name=fixt_name,
+                scope=scope,
+                autouse=autouse,
+                tear=f"'{tear}', " if with_name else "",
+            )
+        )
+
+        glamor_pytester.runpytest()
+        report = glamor_pytester.allure_report
+
+        assert_that(
+            report,
+            has_test_case(
+                test_name,
+                has_container(
+                    report,
+                    not_(has_glamor_befores()),
+                    not_(has_before(tear)),
+                    has_before(fixt_name),
+                    not_(has_after()),
+                    not_(has_glamor_afters()),
+                ),
+            ),
+        )
+
     decor_orders = ("fst", "fts", "tfs", "tsf", "sft", "stf")
 
     # 'fst' means order of decorators: fixture(), setup(), teardown()
