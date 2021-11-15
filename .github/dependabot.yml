@@ -9,7 +9,7 @@ updates:
     directory: "/" # Location of package manifests
     schedule:
       interval: "daily"
-     allow:
+    allow:
       - dependency-name: "pytest"
       - dependency-name: "allure-pytest"
       - dependency-name: "attrs"
