@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Tuple
 import re
 
 from allure_commons.model2 import (
@@ -15,6 +15,14 @@ import pitest as pytest
 
 @attr.s
 class TestResultContainer(TestResultContainer):
+    """Recreate the class from allure lib.
+    Allure uses "asdict" function from "attrs" lib to discover which
+    attributes must be stored in json. "asdict" discovers only attributes which
+    were in class during module initialization. We recreate class with
+    additional attributes, and then: "container.__class__ = OurClass".
+
+    """
+
     if TYPE_CHECKING:
         befores: List[TestBeforeResult] = []
         afters: List[TestAfterResult] = []
@@ -30,7 +38,15 @@ class TestResultContainer(TestResultContainer):
 
 
 @pytest.hookimpl(tryfirst=True)
-def pytest_fixture_post_finalizer(fixturedef, request):
+def pytest_fixture_post_finalizer(
+    fixturedef: pytest.FixtureDef,
+    request: pytest.FixtureRequest,
+):
+    """Fetch info from fixture object and store in allure container.
+
+    :param fixturedef: pytest.FixtureDef instance. According to hookspec.
+    :param request: pytest.FixtureRequest. According to hookspec.
+    """
     listener = allure.listener
     if not listener:
         return
@@ -65,6 +81,10 @@ def pytest_fixture_post_finalizer(fixturedef, request):
 class GlamorReportLogger:
     @allure.hookimpl(tryfirst=True, hookwrapper=True)
     def report_container(self, container: TestResultContainer):
+        """Fetch stored in container data and handle.
+
+        :param container: represents allure fixture json as python object
+        """
         if not hasattr(container, "glamor_setup_name"):
             yield
             return
@@ -86,7 +106,15 @@ class GlamorReportLogger:
         yield
 
     @staticmethod
-    def handle_scope(container: TestResultContainer):
+    def handle_scope(container: TestResultContainer) -> Tuple[str, str]:
+        """Calculate letters representing "scope" and "autouse".
+        They may be included before or after title. Both can be empty.
+        One of them is always empty.
+
+        :param container: represents allure fixture json as python object
+        :return: letters before and after title. Example: ('[Sa] ', '')
+
+        """
         autouse = ""
         if PatchHelper.i_should_add_autouse() and container.glamor_autouse:
             autouse = "a"
@@ -103,6 +131,10 @@ class GlamorReportLogger:
 
     @staticmethod
     def handle_hidden_setup(container: TestResultContainer):
+        """Clear "befores" list and save copy as "glamor_befores".
+
+        :param container: represents allure fixture json as python object
+        """
         befores_passed = {b.status for b in container.befores} == {"passed"}
         if container.glamor_setup_hidden and befores_passed:
             # Save copy in json file for debugging and testing needs
@@ -117,6 +149,12 @@ class GlamorReportLogger:
         scope_before: str,
         scope_after: str,
     ):
+        """Replace standard name with our fancy setup name.
+
+        :param container: represents allure fixture json as python object
+        :param scope_before: scope and autouse letters before title
+        :param scope_after: scope and autouse letters after title
+        """
         setup_name_is_str = isinstance(container.glamor_setup_name, str)
         for before in container.befores:
             if container.glamor_setup_name and setup_name_is_str:
@@ -127,6 +165,10 @@ class GlamorReportLogger:
 
     @staticmethod
     def handle_hidden_teardown(container: TestResultContainer):
+        """Clear "afters" list and save copy as "glamor_afters".
+
+        :param container: represents allure fixture json as python object
+        """
         afters_passed = {a.status for a in container.afters} == {"passed"}
         if container.glamor_teardown_hidden and afters_passed:
             # Save copy in json file for debugging and testing needs
@@ -141,7 +183,13 @@ class GlamorReportLogger:
         scope_before: str,
         scope_after: str,
     ):
+        """Replace standard name with our fancy teardown name.
 
+        :param container: represents allure fixture json as python object
+        :type container: TestResultContainer
+        :param scope_before: scope and autouse letters before title
+        :param scope_after: scope and autouse letters after title
+        """
         glamor_name = container.glamor_teardown_name
         tear_name_is_str = isinstance(container.glamor_teardown_name, str)
         for after in container.afters:
@@ -156,7 +204,11 @@ class GlamorReportLogger:
 
     @staticmethod
     def clean_redundant_fields(container: TestResultContainer):
-        # Do not save redundant data into json file
+        """Do not save redundant data into allure json container.
+        Object is saved if (isinstance(obj, bool) or bool(obj) is True)
+
+        :param container: represents allure fixture json as python object
+        """
         container.glamor_setup_name = None
         container.glamor_setup_hidden = None
         container.glamor_teardown_name = None

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from types import MethodType
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Callable, Optional
 import inspect
 import logging
 
@@ -36,10 +36,6 @@ class PatchHelper:
     @classmethod
     def include_autouse_in_titles(cls):
         cls._add_autouse = True
-
-    @classmethod
-    def exclude_autouse_from_titles(cls):
-        cls._add_autouse = False
 
     @classmethod
     def i_should_add_scope_before(cls) -> bool:
@@ -79,12 +75,27 @@ class PatchHelper:
         return cls.extract_real_func(fixture_func)
 
 
-class Title:
-    def __call__(self, test_title: str):
+class Title(Callable):
+    def __call__(self, test_title: str) -> Callable[[Callable], Callable]:
+        """As usual @allure.title(...) signature
+
+        :param test_title: title for fixture or test
+        """
         return allure_title(test_title)
 
     @staticmethod
-    def setup(setup_title: str = None, *, hidden=False):
+    def setup(
+        setup_title: str = None,
+        *,
+        hidden=False,
+    ) -> Callable[[Callable], Callable]:
+        """Replace standard fixture name with fancy setup name.
+        If setup fails it is always displayed. In spite of "hidden=True".
+
+        :param setup_title: title to use in setup for this fixture
+        :param hidden: whether setup should be displayed or not
+        """
+
         def decorator(func):
             function = PatchHelper.extract_real_func(func)
             function.__glamor_setup_display_name__ = setup_title
@@ -94,7 +105,18 @@ class Title:
         return decorator
 
     @staticmethod
-    def teardown(teardown_title: str = None, *, hidden=False):
+    def teardown(
+        teardown_title: str = None,
+        *,
+        hidden=False,
+    ) -> Callable[[Callable], Callable]:
+        """Replace standard fixture name with fancy teardown name.
+        If teardown fails it is always displayed. In spite of "hidden=True".
+
+        :param teardown_title: title to use in teardown for this fixture
+        :param hidden: whether teardown should be displayed or not
+        """
+
         def decorator(func):
             function = PatchHelper.extract_real_func(func)
             function.__glamor_teardown_display_name__ = teardown_title
@@ -105,11 +127,22 @@ class Title:
 
 
 class DynamicFixtureTitle:
-    def __call__(self, test_title: str):
+    def __call__(self, test_title: str) -> Callable[[Callable], Callable]:
+        """As usual allure.dynamic.title(...) signature
+
+        :param test_title: title for test to set dynamically
+        """
         return allure_dynamic.title(test_title)
 
     @staticmethod
     def setup(setup_title: str = None, *, hidden: bool = None):
+        """Dynamically replace standard fixture name with fancy setup name.
+        If setup fails it is always displayed. In spite of "hidden=True".
+        Can be used only inside fixture body.
+
+        :param setup_title: title to use in setup for this fixture
+        :param hidden: whether setup should be displayed or not
+        """
         func = PatchHelper.get_real_function_of_fixture(inspect.currentframe())
         if setup_title:
             func.__glamor_setup_display_name__ = setup_title
@@ -118,6 +151,13 @@ class DynamicFixtureTitle:
 
     @staticmethod
     def teardown(teardown_title: str = None, *, hidden: bool = None):
+        """Dynamically replace standard fixture name with fancy teardown name.
+        If teardown fails it is always displayed. In spite of "hidden=True".
+        Can be used only inside fixture body.
+
+        :param teardown_title: title to use in teardown for this fixture
+        :param hidden: whether teardown should be displayed or not
+        """
         func = PatchHelper.get_real_function_of_fixture(inspect.currentframe())
         if teardown_title:
             func.__glamor_teardown_display_name__ = teardown_title
@@ -126,10 +166,19 @@ class DynamicFixtureTitle:
 
 
 class Dynamic(allure_dynamic):
+    """Replacement for allure.dynamic."""
+
     title = DynamicFixtureTitle()
 
 
 def include_scope_in_title(where: 'Literal["before", "after"]', autouse=False):
+    """Print scope and autouse before or after fixture title.
+    Example: "[Sa] session_fixture_name" or "class_fixture_name [C]".
+    Can be invoked only once per runtime.
+
+    :param where: where to print - "before" title or "after"
+    :param autouse: whether to include "a" letter or not
+    """
     if getattr(include_scope_in_title, "called", False):
         raise RuntimeError("include_scope can be called only once per runtime")
     if where == "before":
@@ -145,6 +194,13 @@ def include_scope_in_title(where: 'Literal["before", "after"]', autouse=False):
 
 
 def logging_allure_steps(logger: Optional[logging.Logger], level: int = 21):
+    """Print allure.step titles in stdout logging.
+    If logger is None - stops printing allure.step titles.
+    Can be invoked as many times as you need.
+
+    :param logger: instance of `logging.Logger` or None
+    :param level: level for logging. Default 21 (between INFO and WARNING)
+    """
 
     allure_enter: MethodType = getattr(
         logging_allure_steps, "allure_enter", StepContext.__enter__
