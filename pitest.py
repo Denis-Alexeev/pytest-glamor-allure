@@ -6,6 +6,7 @@ from _pytest.config import (
     PytestPluginManager,
     create_terminal_writer,
 )
+from _pytest.fixtures import FixtureDef, FixtureRequest, SubRequest
 from _pytest.junitxml import LogXML
 from _pytest.mark import Mark
 from _pytest.nodes import Item, Node
