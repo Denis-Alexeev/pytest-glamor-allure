@@ -65,74 +65,104 @@ def pytest_fixture_post_finalizer(fixturedef, request):
 class GlamorReportLogger:
     @allure.hookimpl(tryfirst=True, hookwrapper=True)
     def report_container(self, container: TestResultContainer):
-        c = container
-
-        if not hasattr(c, "glamor_setup_name"):
+        if not hasattr(container, "glamor_setup_name"):
             yield
             return
 
+        scope_before, scope_after = self.handle_scope(container)
+
+        self.handle_hidden_setup(container)
+
+        self.handle_setup_name(container, scope_before, scope_after)
+
+        self.handle_hidden_teardown(container)
+
+        self.handle_teardown_name(container, scope_before, scope_after)
+
+        self.clean_redundant_fields(container)
+
+        container.__class__ = TestResultContainer
+
+        yield
+
+    @staticmethod
+    def handle_scope(container: TestResultContainer):
         autouse = ""
-        if PatchHelper.i_should_add_autouse() and c.glamor_autouse:
+        if PatchHelper.i_should_add_autouse() and container.glamor_autouse:
             autouse = "a"
 
         scope_before = ""
         scope_after = ""
-        scope = f"[{c.glamor_scope[:1].upper()}{autouse}]"
+        scope = f"[{container.glamor_scope[:1].upper()}{autouse}]"
         if PatchHelper.i_should_add_scope_before():
             scope_before = scope + " "
         elif PatchHelper.i_should_add_scope_after():
             scope_after = " " + scope
 
-        # Handle setup name. We do not hide setup if it did not pass.
-        befores_passed = {b.status for b in c.befores} == {"passed"}
-        if c.glamor_setup_hidden and befores_passed:
-            # Save copy in json file for debugging and testing needs
-            c.glamor_befores = c.befores.copy()
-            c.befores.clear()
-        else:
-            c.glamor_befores = []
+        return scope_before, scope_after
 
-        setup_name_is_str = isinstance(c.glamor_setup_name, str)
-        for before in c.befores:
-            if c.glamor_setup_name and setup_name_is_str:
-                before.name = c.glamor_setup_name
+    @staticmethod
+    def handle_hidden_setup(container: TestResultContainer):
+        befores_passed = {b.status for b in container.befores} == {"passed"}
+        if container.glamor_setup_hidden and befores_passed:
+            # Save copy in json file for debugging and testing needs
+            container.glamor_befores = container.befores.copy()
+            container.befores.clear()
+        else:
+            container.glamor_befores = []
+
+    @staticmethod
+    def handle_setup_name(
+        container: TestResultContainer,
+        scope_before: str,
+        scope_after: str,
+    ):
+        setup_name_is_str = isinstance(container.glamor_setup_name, str)
+        for before in container.befores:
+            if container.glamor_setup_name and setup_name_is_str:
+                before.name = container.glamor_setup_name
 
             if isinstance(before.name, str):
                 before.name = scope_before + before.name + scope_after
 
-        # Handle teardown name. We do not hide teardown if it did not pass.
-        afters_passed = {a.status for a in c.afters} == {"passed"}
-        if c.glamor_teardown_hidden and afters_passed:
+    @staticmethod
+    def handle_hidden_teardown(container: TestResultContainer):
+        afters_passed = {a.status for a in container.afters} == {"passed"}
+        if container.glamor_teardown_hidden and afters_passed:
             # Save copy in json file for debugging and testing needs
-            c.glamor_afters = c.afters.copy()
-            c.afters.clear()
+            container.glamor_afters = container.afters.copy()
+            container.afters.clear()
         else:
-            c.glamor_afters = []
+            container.glamor_afters = []
 
-        glamor_name = c.glamor_teardown_name
-        tear_name_is_str = isinstance(c.glamor_teardown_name, str)
-        for after in c.afters:
-            if c.glamor_teardown_name and tear_name_is_str:
+    @staticmethod
+    def handle_teardown_name(
+        container: TestResultContainer,
+        scope_before: str,
+        scope_after: str,
+    ):
+
+        glamor_name = container.glamor_teardown_name
+        tear_name_is_str = isinstance(container.glamor_teardown_name, str)
+        for after in container.afters:
+            if container.glamor_teardown_name and tear_name_is_str:
                 new_name = re.sub(".*(?=::)", glamor_name, after.name, 1)
                 after.name = new_name
-            if len(c.afters) == 1 and isinstance(after.name, str):
+            if len(container.afters) == 1 and isinstance(after.name, str):
                 if after.name.endswith("::0"):
                     after.name = after.name[:-3]
             if isinstance(after.name, str):
                 after.name = scope_before + after.name + scope_after
 
+    @staticmethod
+    def clean_redundant_fields(container: TestResultContainer):
         # Do not save redundant data into json file
-        c.glamor_setup_name = None
-        c.glamor_setup_hidden = None
-        c.glamor_teardown_name = None
-        c.glamor_teardown_hidden = None
-        c.glamor_scope = None
-        c.glamor_autouse = None
-
-        # can cause heart attack. do not try to repeat.
-        c.__class__ = TestResultContainer
-
-        yield
+        container.glamor_setup_name = None
+        container.glamor_setup_hidden = None
+        container.glamor_teardown_name = None
+        container.glamor_teardown_hidden = None
+        container.glamor_scope = None
+        container.glamor_autouse = None
 
 
 allure.plugin_manager.register(GlamorReportLogger())
