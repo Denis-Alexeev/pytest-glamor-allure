@@ -29,6 +29,8 @@ def autouse_ids(val):
 
 @pytest.mark.parametrize("autouse", autouse_values, ids=autouse_ids)
 @pytest.mark.parametrize("scope", scopes, ids=scopes_ids)
+@pytest.mark.parametrize("place", ("before", "after"))
+@pytest.mark.parametrize("include_autouse", autouse_values)
 class TestInclude:
     @pytest.fixture
     def monkey_patchhelper(self):
@@ -42,15 +44,13 @@ class TestInclude:
         setattr(p, "_add_scope_before_name", backup_add_scope_before_name)
         include_scope_in_title.called = False
 
-    @pytest.mark.parametrize("place", ("before", "after"))
-    @pytest.mark.parametrize("prefix_autouse", autouse_values)
     def test_scope_autouse(
         self,
         glamor_pytester,
         scope: str,
         autouse: str,
         place: str,
-        prefix_autouse: str,
+        include_autouse: str,
         monkey_patchhelper,
     ):
         setup = "FANCY setup name"
@@ -58,14 +58,14 @@ class TestInclude:
         test_name = "test_test"
         fixt_one = "fixture_one"
         fixt_two = "fixture_two"
-        autouse_prefix = "a" if {autouse, prefix_autouse} == {"True"} else ""
+        autouse_prefix = "a" if {autouse, include_autouse} == {"True"} else ""
 
         glamor_pytester.pytester.makepyfile(
             f"""
             import glamor as allure
             import pitest as pytest
 
-            allure.include_scope_in_title('{place}', autouse={prefix_autouse})
+            allure.include_scope_in_title('{place}', autouse={include_autouse})
 
             @pytest.fixture(scope='{scope}', autouse={autouse})
             @allure.title.setup('{setup}')
@@ -82,15 +82,15 @@ class TestInclude:
 
             """
         )
-        prefix = f"[{scope[:1].upper()}{autouse_prefix}]"
-        if place == "before":
-            prefixed_setup_one = f"{prefix} {setup}"
-            prefixed_tear_one = f"{prefix} {tear}"
-            prefixed_fixt_two = f"[F] {fixt_two}"
-        elif place == "after":
-            prefixed_setup_one = f"{setup} {prefix}"
-            prefixed_tear_one = f"{tear} {prefix}"
-            prefixed_fixt_two = f"{fixt_two} [F]"
+        prefix = f'[{scope[:1].upper()}{autouse_prefix}]'
+        if place == 'before':
+            prefixed_setup_one = f'{prefix} {setup}'
+            prefixed_tear_one = f'{prefix} {tear}'
+            prefixed_fixt_two = f'[F] {fixt_two}'
+        elif place == 'after':
+            prefixed_setup_one = f'{setup} {prefix}'
+            prefixed_tear_one = f'{tear} {prefix}'
+            prefixed_fixt_two = f'{fixt_two} [F]'
         else:
             raise RuntimeError('Unknown "place" parameter')
 
@@ -110,6 +110,59 @@ class TestInclude:
                     report,
                     has_before(prefixed_fixt_two),
                     has_after(prefixed_fixt_two),
+                ),
+            ),
+        )
+
+    def test_fixture_as_method(
+        self,
+        glamor_pytester,
+        scope: str,
+        autouse: str,
+        place: str,
+        include_autouse: str,
+        monkey_patchhelper,
+    ):
+        fixt_name = 'fixt'
+        test_name = 'test_in_class'
+
+        glamor_pytester.pytester.makepyfile(
+            f"""
+            import pitest as pytest
+            import glamor as allure
+
+            allure.include_scope_in_title('{place}', autouse={include_autouse})
+
+            class TestClass:
+                @pytest.fixture(scope='{scope}', autouse={autouse})
+                def {fixt_name}(self):
+                    yield
+
+                def {test_name}(self, fixt):
+                    pass
+            """
+        )
+
+        glamor_pytester.runpytest()
+        report = glamor_pytester.allure_report
+
+        autouse_prefix = "a" if {autouse, include_autouse} == {"True"} else ""
+        prefix = f'[{scope[:1].upper()}{autouse_prefix}]'
+        if place == 'before':
+            fixt_title = f'{prefix} {fixt_name}'
+        elif place == 'after':
+            fixt_title = f'{fixt_name} {prefix}'
+        else:
+            raise RuntimeError('Unknown "place" parameter')
+
+        assert_that(
+            report,
+            has_test_case(
+                test_name,
+                has_container(
+                    report,
+                    has_before(fixt_title),
+                    has_after(fixt_title),
                 ),
             ),
         )
