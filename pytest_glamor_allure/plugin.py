@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, Dict, List, Tuple
 import re
 
 from allure_commons.model2 import (
@@ -59,6 +59,9 @@ def pytest_fixture_post_finalizer(
         return
 
     func = fixturedef.func
+    if func is pytest.get_direct_param_fixture_func:
+        return
+
     teardown_name = getattr(func, "__glamor_teardown_display_name__", None)
     teardown_hidden = getattr(
         func, "__glamor_teardown_display_hidden__", False
@@ -66,9 +69,10 @@ def pytest_fixture_post_finalizer(
     setup_name = getattr(func, "__glamor_setup_display_name__", None)
     setup_hidden = getattr(func, "__glamor_setup_display_hidden__", False)
 
-    fixture_name: str = func.__name__
-    fixture_func = func.__globals__[fixture_name]
-    autouse: bool = fixture_func._pytestfixturefunction.autouse
+    fixture_mgr: pytest.FixtureManager = fixturedef._fixturemanager
+    all_auto_names: Dict[str, list] = fixture_mgr._nodeid_autousenames
+    base_auto_names = all_auto_names.get(fixturedef.baseid, [])
+    autouse = fixturedef.argname in base_auto_names
 
     container.glamor_setup_name = setup_name
     container.glamor_setup_hidden = setup_hidden
