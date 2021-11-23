@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING, Dict, List, Tuple
+import os
 import re
 
 from allure_commons.model2 import (
@@ -11,6 +12,8 @@ import attr
 from glamor.patches import PatchHelper
 import glamor as allure
 import pitest as pytest
+
+GLAMOR_TESTING_MODE = os.environ.get('GLAMOR_TESTING_MODE', False)
 
 
 @attr.s
@@ -173,7 +176,7 @@ class GlamorReportLogger:
 
         :param container: represents allure fixture json as python object
         """
-        afters_passed = {a.status for a in container.afters} == {"passed"}
+        afters_passed = {a.status for a in container.afters} == {'passed'}
         if container.glamor_teardown_hidden and afters_passed:
             # Save copy in json file for debugging and testing needs
             container.glamor_afters = container.afters.copy()
@@ -219,6 +222,10 @@ class GlamorReportLogger:
         container.glamor_teardown_hidden = None
         container.glamor_scope = None
         container.glamor_autouse = None
+
+        if not GLAMOR_TESTING_MODE:
+            container.glamor_afters = None
+            container.glamor_befores = None
 
 
 allure.plugin_manager.register(GlamorReportLogger())
