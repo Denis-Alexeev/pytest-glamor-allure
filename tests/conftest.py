@@ -13,10 +13,11 @@ class GlamorPytester:
         self.allure_report: Optional[AllureReport] = None
 
     def runpytest(self, *args, **kwargs):
-        self.pytester.runpytest(
+        result = self.pytester.runpytest(
             "--alluredir", str(self.pytester.path), *args, **kwargs
         )
         self.allure_report = AllureReport(str(self.pytester.path))
+        return result
 
 
 @pytest.fixture

@@ -510,3 +510,49 @@ class TestOneFixtureOneTest:
                 ),
             ),
         )
+
+    def test_fixture_as_method(self, glamor_pytester, scope, autouse):
+        fixt_name = 'fixt'
+        test_name = 'test_method'
+        test_title = 'Test Title'
+        setup = 'setup title'
+        tear = 'teardown title'
+
+        glamor_pytester.pytester.makepyfile(
+            f"""
+            import glamor as allure
+            import pitest as pytest
+
+            class TestClass:
+                @pytest.fixture(scope='{scope}', autouse={autouse})
+                @allure.title.setup('{setup}')
+                @allure.title.teardown('{tear}')
+                def {fixt_name}(self):
+                    yield 777
+
+                @allure.title('{test_title}')
+                def {test_name}(self, {fixt_name}):
+                    pass
+            """
+        )
+
+        glamor_pytester.runpytest()
+        report = glamor_pytester.allure_report
+
+        assert_that(
+            report,
+            has_test_case(
+                test_title,
+                has_container(
+                    report,
+                    has_before(setup),
+                    not_(has_before(tear)),
+                    not_(has_before(fixt_name)),
+                    not_(has_glamor_befores()),
+                    has_after(tear),
+                    not_(has_after(setup)),
+                    not_(has_after(fixt_name)),
+                    not_(has_glamor_afters()),
+                ),
+            ),
+        )
