@@ -15,33 +15,33 @@ import pitest as pytest
 
 from .matchers import has_after, has_before
 
-autouse_values = ("True", "False")
-scopes = ("function", "class", "module", "package", "session")
+autouse_values = ('True', 'False')
+scopes = ('function', 'class', 'module', 'package', 'session')
 
 
 def scopes_ids(val):
-    return f"scope={val}"
+    return f'scope={val}'
 
 
 def autouse_ids(val):
-    return f"autouse={val}"
+    return f'autouse={val}'
 
 
-@pytest.mark.parametrize("autouse", autouse_values, ids=autouse_ids)
-@pytest.mark.parametrize("scope", scopes, ids=scopes_ids)
-@pytest.mark.parametrize("place", ("before", "after"))
-@pytest.mark.parametrize("include_autouse", autouse_values)
+@pytest.mark.parametrize('autouse', autouse_values, ids=autouse_ids)
+@pytest.mark.parametrize('scope', scopes, ids=scopes_ids)
+@pytest.mark.parametrize('place', ('before', 'after'))
+@pytest.mark.parametrize('include_autouse', autouse_values)
 class TestInclude:
     @pytest.fixture
     def monkey_patchhelper(self):
         p = PatchHelper
-        backup_add_autouse = getattr(p, "_add_autouse")
-        backup_add_scope_after_name = getattr(p, "_add_scope_after_name")
-        backup_add_scope_before_name = getattr(p, "_add_scope_before_name")
+        backup_add_autouse = getattr(p, '_add_autouse')
+        backup_add_scope_after_name = getattr(p, '_add_scope_after_name')
+        backup_add_scope_before_name = getattr(p, '_add_scope_before_name')
         yield
-        setattr(p, "_add_autouse", backup_add_autouse)
-        setattr(p, "_add_scope_after_name", backup_add_scope_after_name)
-        setattr(p, "_add_scope_before_name", backup_add_scope_before_name)
+        setattr(p, '_add_autouse', backup_add_autouse)
+        setattr(p, '_add_scope_after_name', backup_add_scope_after_name)
+        setattr(p, '_add_scope_before_name', backup_add_scope_before_name)
         include_scope_in_title.called = False
 
     def test_scope_autouse(
@@ -53,12 +53,12 @@ class TestInclude:
         include_autouse: str,
         monkey_patchhelper,
     ):
-        setup = "FANCY setup name"
-        tear = "FANCY teardown name"
-        test_name = "test_test"
-        fixt_one = "fixture_one"
-        fixt_two = "fixture_two"
-        autouse_prefix = "a" if {autouse, include_autouse} == {"True"} else ""
+        setup = 'FANCY setup name'
+        tear = 'FANCY teardown name'
+        test_name = 'test_test'
+        fixt_one = 'fixture_one'
+        fixt_two = 'fixture_two'
+        autouse_prefix = 'a' if {autouse, include_autouse} == {'True'} else ''
 
         glamor_pytester.pytester.makepyfile(
             f"""
@@ -146,7 +146,7 @@ class TestInclude:
         glamor_pytester.runpytest()
         report = glamor_pytester.allure_report
 
-        autouse_prefix = "a" if {autouse, include_autouse} == {"True"} else ""
+        autouse_prefix = 'a' if {autouse, include_autouse} == {'True'} else ''
         prefix = f'[{scope[:1].upper()}{autouse_prefix}]'
         if place == 'before':
             fixt_title = f'{prefix} {fixt_name}'
@@ -169,7 +169,7 @@ class TestInclude:
 
 
 class TestLogging:
-    logger_name = "GlamorAsAllureLogger"
+    logger_name = 'GlamorAsAllureLogger'
 
     @pytest.fixture(autouse=True)
     def backup_and_store_step_ctx(self):
@@ -184,7 +184,7 @@ class TestLogging:
         stream = io.StringIO()
         handler = logging.StreamHandler(stream=stream)
         handler.setLevel(logging.INFO)
-        fmt = logging.Formatter("[%(levelname)s] %(message)s")
+        fmt = logging.Formatter('[%(levelname)s] %(message)s')
         handler.setFormatter(fmt)
         logger.addHandler(handler)
 
@@ -192,64 +192,64 @@ class TestLogging:
 
         logger.handlers.clear()
 
-    @pytest.mark.parametrize("switch", ("on", "off"))
-    @pytest.mark.parametrize("times", (1, 2), ids=("once", "twice"))
+    @pytest.mark.parametrize('switch', ('on', 'off'))
+    @pytest.mark.parametrize('times', (1, 2), ids=('once', 'twice'))
     def test_logging_step_can_be_on_or_off(self, logger_stream, switch, times):
         logger, stream = logger_stream
         for i in range(times):
-            allure.logging_allure_steps(logger if switch == "on" else None)
+            allure.logging_allure_steps(logger if switch == 'on' else None)
 
         expected_messages = []
 
-        logger.info("start message")
-        expected_messages.append("[INFO] start message")
+        logger.info('start message')
+        expected_messages.append('[INFO] start message')
 
-        with allure.step("step message"):
-            if switch == "on":
-                expected_messages.append("[STEP] step message")
+        with allure.step('step message'):
+            if switch == 'on':
+                expected_messages.append('[STEP] step message')
 
-        logger.error("end message")
-        expected_messages.append("[ERROR] end message")
+        logger.error('end message')
+        expected_messages.append('[ERROR] end message')
 
-        logger_messages = stream.getvalue().strip().split("\n")
+        logger_messages = stream.getvalue().strip().split('\n')
         assert logger_messages == expected_messages
 
-    @pytest.mark.parametrize("start", ("on", "off"))
-    @pytest.mark.parametrize("steps", (1, 2, 3, 4))
+    @pytest.mark.parametrize('start', ('on', 'off'))
+    @pytest.mark.parametrize('steps', (1, 2, 3, 4))
     def test_logging_state_can_be_changed(self, start, logger_stream, steps):
         logger, stream = logger_stream
 
         expected_messages = []
 
-        odd = logger if start == "on" else None
-        even = None if start == "on" else logger
+        odd = logger if start == 'on' else None
+        even = None if start == 'on' else logger
 
         allure.logging_allure_steps(odd)
-        with allure.step("one"):
+        with allure.step('one'):
             if odd:
-                expected_messages.append("[STEP] one")
+                expected_messages.append('[STEP] one')
 
         if steps >= 2:
             allure.logging_allure_steps(even)
-            with allure.step("two"):
+            with allure.step('two'):
                 if even:
-                    expected_messages.append("[STEP] two")
+                    expected_messages.append('[STEP] two')
 
         if steps >= 3:
             allure.logging_allure_steps(odd)
-            with allure.step("three"):
+            with allure.step('three'):
                 if odd:
-                    expected_messages.append("[STEP] three")
+                    expected_messages.append('[STEP] three')
 
         if steps >= 4:
             allure.logging_allure_steps(even)
-            with allure.step("four"):
+            with allure.step('four'):
                 if even:
-                    expected_messages.append("[STEP] four")
+                    expected_messages.append('[STEP] four')
 
         logger_messages_str = stream.getvalue().strip()
         if logger_messages_str:
-            logger_messages = logger_messages_str.split("\n")
+            logger_messages = logger_messages_str.split('\n')
         else:
             logger_messages = []
 

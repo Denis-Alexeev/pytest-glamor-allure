@@ -6,12 +6,16 @@ import inspect
 import logging
 
 from allure import dynamic as allure_dynamic, title as allure_title
-from allure_commons._allure import StepContext
 
 if TYPE_CHECKING:
     from typing import Literal
 
-    from _pytest.fixtures import Config, FixtureFunctionMarker
+    from _pytest.fixtures import (
+        Config,
+        FixtureDef,
+        FixtureFunctionMarker,
+        FixtureManager,
+    )
     from allure_pytest.listener import AllureListener, AllureReporter
 
     class FixtureFunction:
@@ -22,6 +26,9 @@ class PatchHelper:
     _add_scope_before_name: bool = None
     _add_scope_after_name: bool = None
     _add_autouse: bool = None
+    fixt_mgr: Optional['FixtureManager'] = None
+    logger: Optional[logging.Logger] = None
+    level: int = 21
 
     @classmethod
     def include_scope_before_titles(cls):
@@ -51,15 +58,20 @@ class PatchHelper:
 
     @staticmethod
     def extract_real_func(func):
-        if getattr(func, "__pytest_wrapped__", None):
+        if getattr(func, '__pytest_wrapped__', None):
             return func.__pytest_wrapped__.obj
         return func
 
+    @classmethod
+    def fixture_has_autouse(cls, fixturedef: 'FixtureDef'):
+        autos = cls.fixt_mgr._nodeid_autousenames.get(fixturedef.baseid, [])
+        return fixturedef.argname in autos
+
     @staticmethod
-    def __raise_if_not_fixture(fixture: "FixtureFunction"):
+    def __raise_if_not_fixture(fixture: 'FixtureFunction'):
         error_message = (
-            "dynamic.title.setup and dynamic.title.teardown "
-            "must be used only inside fixture"
+            'dynamic.title.setup and dynamic.title.teardown '
+            'must be used only inside fixture'
         )
         try:
             return fixture._pytestfixturefunction
@@ -70,9 +82,17 @@ class PatchHelper:
     def get_real_function_of_fixture(cls, current_frame):
         fixture_frame = current_frame.f_back
         fixture_name = fixture_frame.f_code.co_name
-        fixture_func = fixture_frame.f_globals[fixture_name]
-        cls.__raise_if_not_fixture(fixture_func)
-        return cls.extract_real_func(fixture_func)
+        fixturedefs = cls.fixt_mgr._arg2fixturedefs.get(fixture_name, [])
+        if not fixturedefs:
+            raise RuntimeError(f'there is no fixture named "{fixture_name}"')
+        for fixturedef in fixturedefs:
+            fixture_func = fixturedef.func
+            func = cls.extract_real_func(fixture_func)
+            if func.__code__ == fixture_frame.f_code:
+                if isinstance(func, MethodType):
+                    func = func.__func__
+                return func
+        raise RuntimeError('Unknown error during "dynamic.title"')
 
 
 class Title(Callable):
@@ -179,11 +199,11 @@ def include_scope_in_title(where: 'Literal["before", "after"]', autouse=False):
     :param where: where to print - "before" title or "after"
     :param autouse: whether to include "a" letter or not
     """
-    if getattr(include_scope_in_title, "called", False):
-        raise RuntimeError("include_scope can be called only once per runtime")
-    if where == "before":
+    if getattr(include_scope_in_title, 'called', False):
+        raise RuntimeError('include_scope can be called only once per runtime')
+    if where == 'before':
         PatchHelper.include_scope_before_titles()
-    elif where == "after":
+    elif where == 'after':
         PatchHelper.include_scope_after_titles()
     else:
         raise RuntimeError('"where" argument must be "before" or "after"')
@@ -202,27 +222,19 @@ def logging_allure_steps(logger: Optional[logging.Logger], level: int = 21):
     :param level: level for logging. Default 21 (between INFO and WARNING)
     """
 
-    allure_enter: MethodType = getattr(
-        logging_allure_steps, "allure_enter", StepContext.__enter__
-    )
-    logging_allure_steps.allure_enter = allure_enter
     if logger is not None and not isinstance(logger, logging.Logger):
         raise RuntimeError('"logger" must be instance of Logger or NoneType')
-    if logger is None:
-        StepContext.__enter__ = allure_enter
-        return
 
-    logging.addLevelName(level, "STEP")
+    if not isinstance(level, int):
+        raise RuntimeError('"level" must be integer')
 
-    def patched_enter(self: StepContext):
-        if self.title:
-            logger.log(level, self.title)
-        return allure_enter(self)
-
-    StepContext.__enter__ = patched_enter
+    PatchHelper.logger = logger
+    PatchHelper.level = level
+    logging.addLevelName(level, 'STEP')
+    return
 
 
 title = Title()
-pytest_config: Optional["Config"] = None
-listener: Optional["AllureListener"] = None
-reporter: Optional["AllureReporter"] = None
+pytest_config: Optional['Config'] = None
+listener: Optional['AllureListener'] = None
+reporter: Optional['AllureReporter'] = None

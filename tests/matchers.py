@@ -13,14 +13,14 @@ from hamcrest.core.matcher import Matcher
 if TYPE_CHECKING:
     from typing import Literal
 
-afters: Union[str, 'Literal["afters"]'] = "afters"
-befores: Union[str, 'Literal["befores"]'] = "befores"
-matchers_with_none = RuntimeError("matchers can not be used if name is None")
-glamor = "glamor"
+afters: Union[str, 'Literal["afters"]'] = 'afters'
+befores: Union[str, 'Literal["befores"]'] = 'befores'
+matchers_with_none = RuntimeError('matchers can not be used if name is None')
+glamor = 'glamor'
 
 
-def just_has_glamor(name: Literal["befores", "afters"]):
-    return has_key(f"{glamor}_{name}")
+def just_has_glamor(name: 'Literal["befores", "afters"]'):
+    return has_key(f'{glamor}_{name}')
 
 
 def has_glamor_befores(name: str = None, *matchers: Matcher):
@@ -28,7 +28,7 @@ def has_glamor_befores(name: str = None, *matchers: Matcher):
         if matchers:
             raise matchers_with_none
         return just_has_glamor(befores)
-    return has_section(f"{glamor}_{befores}", name, *matchers)
+    return has_section(f'{glamor}_{befores}', name, *matchers)
 
 
 def has_glamor_afters(name: str = None, *matchers: Matcher):
@@ -36,7 +36,7 @@ def has_glamor_afters(name: str = None, *matchers: Matcher):
         if matchers:
             raise matchers_with_none
         return just_has_glamor(afters)
-    return has_section(f"{glamor}_{afters}", name, *matchers)
+    return has_section(f'{glamor}_{afters}', name, *matchers)
 
 
 def has_before(name: str = None, *matchers: Matcher):

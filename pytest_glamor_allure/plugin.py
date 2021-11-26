@@ -40,6 +40,12 @@ class TestResultContainer(TestResultContainer):
     glamor_befores: List[TestBeforeResult] = attr.ib(factory=list)
 
 
+@pytest.hookimpl(hookwrapper=True)
+def pytest_sessionstart(session: pytest.Session):
+    yield
+    PatchHelper.fixt_mgr = session._fixturemanager
+
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_fixture_post_finalizer(
     fixturedef: pytest.FixtureDef,
@@ -50,12 +56,17 @@ def pytest_fixture_post_finalizer(
     :param fixturedef: pytest.FixtureDef instance. According to hookspec.
     :param request: pytest.FixtureRequest. According to hookspec.
     """
+    if PatchHelper.fixt_mgr is None:
+        return
+
     listener = allure.listener
     if not listener:
         return
+
     container_uuid = listener._cache.get(fixturedef)
     if container_uuid is None:
         return
+
     container: TestResultContainer
     container = allure.reporter._items.get(container_uuid)
     if container is None:
@@ -65,34 +76,35 @@ def pytest_fixture_post_finalizer(
     if func is pytest.get_direct_param_fixture_func:
         return
 
-    teardown_name = getattr(func, "__glamor_teardown_display_name__", None)
+    teardown_name = getattr(func, '__glamor_teardown_display_name__', None)
     teardown_hidden = getattr(
-        func, "__glamor_teardown_display_hidden__", False
+        func, '__glamor_teardown_display_hidden__', False
     )
-    setup_name = getattr(func, "__glamor_setup_display_name__", None)
-    setup_hidden = getattr(func, "__glamor_setup_display_hidden__", False)
-
-    fixture_mgr: pytest.FixtureManager = fixturedef._fixturemanager
-    all_auto_names: Dict[str, list] = fixture_mgr._nodeid_autousenames
-    base_auto_names = all_auto_names.get(fixturedef.baseid, [])
-    autouse = fixturedef.argname in base_auto_names
+    setup_name = getattr(func, '__glamor_setup_display_name__', None)
+    setup_hidden = getattr(func, '__glamor_setup_display_hidden__', False)
 
     container.glamor_setup_name = setup_name
     container.glamor_setup_hidden = setup_hidden
     container.glamor_teardown_name = teardown_name
     container.glamor_teardown_hidden = teardown_hidden
     container.glamor_scope = fixturedef.scope
-    container.glamor_autouse = autouse
+    container.glamor_autouse = PatchHelper.fixture_has_autouse(fixturedef)
 
 
 class GlamorReportLogger:
+    @allure.hookimpl(tryfirst=True, hookwrapper=True)
+    def start_step(self, uuid, title, params):
+        if PatchHelper.logger:
+            PatchHelper.logger.log(PatchHelper.level, title)
+        yield
+
     @allure.hookimpl(tryfirst=True, hookwrapper=True)
     def report_container(self, container: TestResultContainer):
         """Fetch stored in container data and handle.
 
         :param container: represents allure fixture json as python object
         """
-        if not hasattr(container, "glamor_setup_name"):
+        if not hasattr(container, 'glamor_setup_name'):
             yield
             return
 
@@ -122,17 +134,17 @@ class GlamorReportLogger:
         :return: letters before and after title. Example: ('[Sa] ', '')
 
         """
-        autouse = ""
+        autouse = ''
         if PatchHelper.i_should_add_autouse() and container.glamor_autouse:
-            autouse = "a"
+            autouse = 'a'
 
-        scope_before = ""
-        scope_after = ""
-        scope = f"[{container.glamor_scope[:1].upper()}{autouse}]"
+        scope_before = ''
+        scope_after = ''
+        scope = f'[{container.glamor_scope[:1].upper()}{autouse}]'
         if PatchHelper.i_should_add_scope_before():
-            scope_before = scope + " "
+            scope_before = scope + ' '
         elif PatchHelper.i_should_add_scope_after():
-            scope_after = " " + scope
+            scope_after = ' ' + scope
 
         return scope_before, scope_after
 
@@ -142,7 +154,7 @@ class GlamorReportLogger:
 
         :param container: represents allure fixture json as python object
         """
-        befores_passed = {b.status for b in container.befores} == {"passed"}
+        befores_passed = {b.status for b in container.befores} == {'passed'}
         if container.glamor_setup_hidden and befores_passed:
             # Save copy in json file for debugging and testing needs
             container.glamor_befores = container.befores.copy()
@@ -201,10 +213,10 @@ class GlamorReportLogger:
         tear_name_is_str = isinstance(container.glamor_teardown_name, str)
         for after in container.afters:
             if container.glamor_teardown_name and tear_name_is_str:
-                new_name = re.sub(".*(?=::)", glamor_name, after.name, 1)
+                new_name = re.sub('.*(?=::)', glamor_name, after.name, 1)
                 after.name = new_name
             if len(container.afters) == 1 and isinstance(after.name, str):
-                if after.name.endswith("::0"):
+                if after.name.endswith('::0'):
                     after.name = after.name[:-3]
             if isinstance(after.name, str):
                 after.name = scope_before + after.name + scope_after
