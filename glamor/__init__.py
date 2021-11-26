@@ -36,7 +36,7 @@ from allure_commons.model2 import (
     TestStepResult,
 )
 from allure_commons.types import LabelType as label_type, LinkType as link_type
-from allure_commons.utils import func_parameters, now
+from allure_commons.utils import func_parameters, md5, now, platform_label
 from allure_pytest.utils import (
     allure_description as get_description,
     allure_description_html as get_description_html,
@@ -78,16 +78,16 @@ def __getattr__(name):
 
     def get_listener():
         for plugin in plugin_manager._name2plugin.values():
-            if plugin.__class__.__name__ == "AllureListener":
+            if plugin.__class__.__name__ == 'AllureListener':
                 return plugin
         return None
 
-    name_to_attr = {"reporter": "allure_logger", "pytest_config": "config"}
+    name_to_attr = {'reporter': 'allure_logger', 'pytest_config': 'config'}
 
-    if name == "listener":
+    if name == 'listener':
         return get_listener()
 
-    elif name in ("reporter", "pytest_config"):
+    elif name in ('reporter', 'pytest_config'):
         return getattr(get_listener(), name_to_attr[name], None)
 
     raise AttributeError(msg)
