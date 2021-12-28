@@ -1,6 +1,6 @@
 allure-pytest==2.9.45
 allure-python-commons-test
-attrs==21.2.0
+attrs==21.3.0
 pytest==6.2.5
 tox
 black
