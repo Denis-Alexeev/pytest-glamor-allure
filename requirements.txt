@@ -1,7 +1,7 @@
 allure-pytest==2.9.45
 allure-python-commons-test
 attrs==21.4.0
-pytest==7.1.0
+pytest==7.1.1
 tox
 black
 flake8
