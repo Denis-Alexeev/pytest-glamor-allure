@@ -43,7 +43,7 @@ class TestResultContainer(TestResultContainer):
 @pytest.hookimpl(hookwrapper=True)
 def pytest_sessionstart(session: pytest.Session):
     yield
-    PatchHelper.fixt_mgr = session._fixturemanager
+    PatchHelper.fixt_mgr = getattr(session, '_fixturemanager', None)
 
 
 @pytest.hookimpl(tryfirst=True)
