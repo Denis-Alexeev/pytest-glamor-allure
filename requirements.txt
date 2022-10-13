@@ -1,4 +1,4 @@
-allure-pytest==2.11.0
+allure-pytest==2.11.1
 allure-python-commons-test
 attrs==22.1.0
 pytest==7.1.3
