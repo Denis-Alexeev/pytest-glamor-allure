@@ -1,5 +1,6 @@
 """Here we test that we do not break allure or pytest behaviour.
 Our goal is to supplement them but not to change it (or even break)."""
+
 from allure_commons_test.container import has_container
 from allure_commons_test.report import has_test_case
 from hamcrest import assert_that, not_

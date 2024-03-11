@@ -2,6 +2,7 @@
 Here we test `glamor.include_scope_in_title` and
 `glamor.logging_allure_steps` functions.
 """
+
 import io
 import logging
 
