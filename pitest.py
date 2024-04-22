@@ -27,3 +27,10 @@ from _pytest.outcomes import (
 from _pytest.pytester import Pytester
 from _pytest.python import Function, Metafunc
 from _pytest.reports import CollectReport, TestReport
+
+try:
+    from _pytest.fixtures import get_direct_param_fixture_func
+    # pytest versions up to 7.*.*
+except ImportError:
+    from _pytest.python import get_direct_param_fixture_func
+    # pytest versions from 8.*.*
