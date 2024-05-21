@@ -10,7 +10,6 @@ classifiers = [
     'License :: OSI Approved :: MIT License',
     'Natural Language :: Russian',
     'Operating System :: OS Independent',
-    'Programming Language :: Python :: 3.7',
     'Programming Language :: Python :: 3.8',
     'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
@@ -23,7 +22,7 @@ classifiers = [
 install_requires = [
     'allure-pytest',
     'allure-python-commons',
-    'pytest<=8.2.0',
+    'pytest<=8.2.1',
     'attrs',
 ]
 
