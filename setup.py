@@ -22,7 +22,7 @@ classifiers = [
 install_requires = [
     'allure-pytest',
     'allure-python-commons',
-    'pytest<=8.2.1',
+    'pytest<=8.2.2',
     'attrs',
 ]
 
