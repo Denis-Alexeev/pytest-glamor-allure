@@ -54,7 +54,6 @@ from allure_pytest.utils import (
     get_pytest_report_status,
     get_status,
     get_status_details,
-    mark_to_str,
     pytest_markers,
 )
 
