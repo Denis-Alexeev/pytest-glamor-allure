@@ -56,6 +56,7 @@ from allure_pytest.utils import (
     get_status_details,
     pytest_markers,
 )
+
 try:
     from allure_pytest.utils import mark_to_str  # allure-pytest <= 2.14.3
 except ImportError:
