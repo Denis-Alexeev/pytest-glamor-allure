@@ -15,15 +15,16 @@ classifiers = [
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
     'Topic :: Software Development :: Testing',
     'Topic :: Software Development :: Quality Assurance',
 ]
 
 install_requires = [
-    'allure-pytest>=2.14.3',
+    'allure-pytest<=2.14.3',
     'allure-python-commons',
-    'pytest<=8.2.1',
-    'attrs',
+    'pytest<=8.4.1',
+    'attrs<=25.3.0',
 ]
 
 entry_points = {
@@ -50,5 +51,5 @@ if __name__ == '__main__':
         setup_requires=['setuptools_scm'],
         install_requires=install_requires,
         entry_points=entry_points,
-        python_requires='>=3.7',
+        python_requires='>=3.8',
     )

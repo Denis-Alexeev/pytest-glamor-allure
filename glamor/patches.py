@@ -58,7 +58,9 @@ class PatchHelper:
 
     @staticmethod
     def extract_real_func(func):
-        if getattr(func, '__pytest_wrapped__', None):
+        if hasattr(func, '_get_wrapped_function'):  # pytest >= 8.4
+            return func._get_wrapped_function()
+        if getattr(func, '__pytest_wrapped__', None):  # pytest < 8.4
             return func.__pytest_wrapped__.obj
         return func
 
