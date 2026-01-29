@@ -21,13 +21,13 @@ from .test_glamor_functions import (
 )
 
 
-@pytest.mark.parametrize("scope", scopes, ids=scopes_ids)
-@pytest.mark.parametrize("autouse", autouse_values, ids=autouse_ids)
+@pytest.mark.parametrize('scope', scopes, ids=scopes_ids)
+@pytest.mark.parametrize('autouse', autouse_values, ids=autouse_ids)
 class TestOneFixtureOneTest:
     def test_setup_name_yield(self, glamor_pytester, scope, autouse):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
-        setup_name = "FANCY SETUP NAME"
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
+        setup_name = 'FANCY SETUP NAME'
         glamor_pytester.pytester.makepyfile(
             """
             import pitest as pytest
@@ -70,9 +70,9 @@ class TestOneFixtureOneTest:
         )
 
     def test_setup_name_return(self, glamor_pytester, scope, autouse):
-        test_name = "test_simple"
-        fixt_name = "simple_return_fixture"
-        setup_name = "FANCY SETUP NAME"
+        test_name = 'test_simple'
+        fixt_name = 'simple_return_fixture'
+        setup_name = 'FANCY SETUP NAME'
         glamor_pytester.pytester.makepyfile(
             """
             import pitest as pytest
@@ -114,9 +114,9 @@ class TestOneFixtureOneTest:
         )
 
     def test_teardown_name_yield(self, glamor_pytester, scope, autouse):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
-        teardown_name = "FANCY TEARDOWN NAME"
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
+        teardown_name = 'FANCY TEARDOWN NAME'
         glamor_pytester.pytester.makepyfile(
             """
             import pitest as pytest
@@ -159,9 +159,9 @@ class TestOneFixtureOneTest:
         )
 
     def test_teardown_name_return(self, glamor_pytester, scope, autouse):
-        test_name = "test_simple"
-        fixt_name = "simple_return_fixture"
-        teardown_name = "FANCY TEARDOWN NAME"
+        test_name = 'test_simple'
+        fixt_name = 'simple_return_fixture'
+        teardown_name = 'FANCY TEARDOWN NAME'
         glamor_pytester.pytester.makepyfile(
             """
             import pitest as pytest
@@ -202,12 +202,14 @@ class TestOneFixtureOneTest:
             ),
         )
 
-    with_name_ids = ("with_name", "w/o_name")
+    with_name_ids = ('with_name', 'w/o_name')
 
-    @pytest.mark.parametrize("with_name", (True, False), ids=with_name_ids)
-    def test_setup_hidden_yield(self, glamor_pytester, scope, autouse, with_name):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
+    @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
+    def test_setup_hidden_yield(
+        self, glamor_pytester, scope, autouse, with_name
+    ):
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
         setup = 'bare fixture name is stored in json if "hidden=True"'
         glamor_pytester.pytester.makepyfile(
             """
@@ -227,7 +229,7 @@ class TestOneFixtureOneTest:
                 fixt_name=fixt_name,
                 scope=scope,
                 autouse=autouse,
-                setup_name=f"'{setup}', " if with_name else "",
+                setup_name=f"'{setup}', " if with_name else '',
             )
         )
 
@@ -250,10 +252,12 @@ class TestOneFixtureOneTest:
             ),
         )
 
-    @pytest.mark.parametrize("with_name", (True, False), ids=with_name_ids)
-    def test_setup_hidden_return(self, glamor_pytester, scope, autouse, with_name):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
+    @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
+    def test_setup_hidden_return(
+        self, glamor_pytester, scope, autouse, with_name
+    ):
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
         setup = 'bare fixture name is stored in json if "hidden=True"'
         glamor_pytester.pytester.makepyfile(
             """
@@ -273,7 +277,7 @@ class TestOneFixtureOneTest:
                 fixt_name=fixt_name,
                 scope=scope,
                 autouse=autouse,
-                setup_name=f"'{setup}', " if with_name else "",
+                setup_name=f"'{setup}', " if with_name else '',
             )
         )
 
@@ -295,10 +299,12 @@ class TestOneFixtureOneTest:
             ),
         )
 
-    @pytest.mark.parametrize("with_name", (True, False), ids=with_name_ids)
-    def test_teardown_hidden_yield(self, glamor_pytester, scope, autouse, with_name):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
+    @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
+    def test_teardown_hidden_yield(
+        self, glamor_pytester, scope, autouse, with_name
+    ):
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
         tear = 'bare fixture name is stored in json if "hidden=True"'
         glamor_pytester.pytester.makepyfile(
             """
@@ -318,7 +324,7 @@ class TestOneFixtureOneTest:
                 fixt_name=fixt_name,
                 scope=scope,
                 autouse=autouse,
-                tear=f"'{tear}', " if with_name else "",
+                tear=f"'{tear}', " if with_name else '',
             )
         )
 
@@ -336,15 +342,17 @@ class TestOneFixtureOneTest:
                     has_before(fixt_name),
                     not_(has_after()),
                     not_(has_glamor_afters(tear)),
-                    has_glamor_afters(f"{fixt_name}::0"),
+                    has_glamor_afters(f'{fixt_name}::0'),
                 ),
             ),
         )
 
-    @pytest.mark.parametrize("with_name", (True, False), ids=with_name_ids)
-    def test_teardown_hidden_return(self, glamor_pytester, scope, autouse, with_name):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
+    @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
+    def test_teardown_hidden_return(
+        self, glamor_pytester, scope, autouse, with_name
+    ):
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
         tear = 'bare fixture name is stored in json if "hidden=True"'
         glamor_pytester.pytester.makepyfile(
             """
@@ -364,7 +372,7 @@ class TestOneFixtureOneTest:
                 fixt_name=fixt_name,
                 scope=scope,
                 autouse=autouse,
-                tear=f"'{tear}', " if with_name else "",
+                tear=f"'{tear}', " if with_name else '',
             )
         )
 
@@ -386,21 +394,23 @@ class TestOneFixtureOneTest:
             ),
         )
 
-    decor_orders = ("fst", "fts", "tfs", "tsf", "sft", "stf")
+    decor_orders = ('fst', 'fts', 'tfs', 'tsf', 'sft', 'stf')
 
     # 'fst' means order of decorators: fixture(), setup(), teardown()
 
-    @pytest.mark.parametrize("order", decor_orders)
-    def test_setup_and_tear_yield(self, glamor_pytester, scope, autouse, order):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
-        setup = "fancy setup name"
-        tear = "fancy teardown name"
+    @pytest.mark.parametrize('order', decor_orders)
+    def test_setup_and_tear_yield(
+        self, glamor_pytester, scope, autouse, order
+    ):
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
+        setup = 'fancy setup name'
+        tear = 'fancy teardown name'
         setup_decor = f'@allure.title.setup("{setup}")'
         teardown_decor = f'@allure.title.teardown("{tear}")'
         fixture_decor = f'@pytest.fixture(scope="{scope}", autouse={autouse})'
 
-        order_map = {"f": fixture_decor, "s": setup_decor, "t": teardown_decor}
+        order_map = {'f': fixture_decor, 's': setup_decor, 't': teardown_decor}
 
         glamor_pytester.pytester.makepyfile(
             """
@@ -445,17 +455,19 @@ class TestOneFixtureOneTest:
             ),
         )
 
-    @pytest.mark.parametrize("order", decor_orders)
-    def test_setup_and_tear_return(self, glamor_pytester, scope, autouse, order):
-        test_name = "test_simple"
-        fixt_name = "simple_yield_fixture"
-        setup = "fancy setup name"
-        tear = "fancy teardown name"
+    @pytest.mark.parametrize('order', decor_orders)
+    def test_setup_and_tear_return(
+        self, glamor_pytester, scope, autouse, order
+    ):
+        test_name = 'test_simple'
+        fixt_name = 'simple_yield_fixture'
+        setup = 'fancy setup name'
+        tear = 'fancy teardown name'
         setup_decor = f'@allure.title.setup("{setup}")'
         teardown_decor = f'@allure.title.teardown("{tear}")'
         fixture_decor = f'@pytest.fixture(scope="{scope}", autouse={autouse})'
 
-        order_map = {"f": fixture_decor, "s": setup_decor, "t": teardown_decor}
+        order_map = {'f': fixture_decor, 's': setup_decor, 't': teardown_decor}
 
         glamor_pytester.pytester.makepyfile(
             """
@@ -500,11 +512,11 @@ class TestOneFixtureOneTest:
         )
 
     def test_fixture_as_method(self, glamor_pytester, scope, autouse):
-        fixt_name = "fixt"
-        test_name = "test_method"
-        test_title = "Test Title"
-        setup = "setup title"
-        tear = "teardown title"
+        fixt_name = 'fixt'
+        test_name = 'test_method'
+        test_title = 'Test Title'
+        setup = 'setup title'
+        tear = 'teardown title'
 
         glamor_pytester.pytester.makepyfile(
             f"""
