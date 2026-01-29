@@ -255,3 +255,4 @@ class TestLogging:
             logger_messages = []
 
         assert expected_messages == logger_messages
+        
