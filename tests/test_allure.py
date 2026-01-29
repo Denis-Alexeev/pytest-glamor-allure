@@ -16,8 +16,7 @@ from .matchers import (
 
 
 def test_parametrized(glamor_pytester):
-    glamor_pytester.pytester.makepyfile(
-        """
+    glamor_pytester.pytester.makepyfile("""
         import glamor as allure
         import pytest
 
@@ -37,8 +36,7 @@ def test_parametrized(glamor_pytester):
             @pytest.mark.parametrize('param_meth', ('e', 'f'))
             def test_method(self, param_cls, param_meth, fixt):
                 pass
-        """
-    )
+        """)
 
     result = glamor_pytester.runpytest()
     assert result.ret == pytest.ExitCode.OK
