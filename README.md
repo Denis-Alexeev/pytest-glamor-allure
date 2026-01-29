@@ -1,3 +1,7 @@
+### From the fork author
+
+I have updated the dependencies for pytest v9.x.x
+
 # pytest-glamor-allure
 
 pytest plugin extending allure behaviour
