@@ -78,4 +78,3 @@ def test_parametrized(glamor_pytester):
                     ),
                 ),
             )
-            
