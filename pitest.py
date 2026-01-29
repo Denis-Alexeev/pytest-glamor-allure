@@ -26,6 +26,24 @@ from _pytest.outcomes import (
 )
 from _pytest.pytester import Pytester
 from _pytest.python import Function
+try:
+    from _pytest.outcomes import _with_exception as with_exception # pytest v9 cut out
+    from _pytest.python import Metafunc # pytest v9 cut out
+except ImportError:
+    def with_exception(func):
+        """
+        Replacing the old _with_exception that was removed from pytest v9
+        """
+        try:
+            return func()
+        except skip.Exception as e:
+            raise
+        except AssertionError:
+            raise
+        except BaseException as e:
+            tb = sys.exc_info()[2]
+            raise e.with_traceback(tb)
+    
 from _pytest.reports import CollectReport, TestReport
 
 try:
@@ -38,16 +56,3 @@ except ImportError:
     # pytest versions from 8.*.*
     
 
-def with_exception(func):
-    """
-    Replacing the old _with_exception that was removed from pytest v9
-    """
-    try:
-        return func()
-    except skip.Exception as e:
-        raise
-    except AssertionError:
-        raise
-    except BaseException as e:
-        tb = sys.exc_info()[2]
-        raise e.with_traceback(tb)
