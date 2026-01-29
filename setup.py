@@ -24,7 +24,7 @@ install_requires = [
     'allure-pytest<=2.14.3',
     'allure-python-commons',
     'pytest<=8.4.1',
-    'attrs<=25.3.0',
+    'attrs<=25.4.0',
 ]
 
 entry_points = {
