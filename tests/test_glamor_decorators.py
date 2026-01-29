@@ -239,7 +239,7 @@ class TestOneFixtureOneTest:
         assert_that(
             report,
             has_test_case(
-                test_name,
+                test_name, 
                 has_container(
                     report,
                     has_glamor_befores(fixt_name),

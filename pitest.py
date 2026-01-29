@@ -1,3 +1,5 @@
+import sys
+
 from pytest import *
 from _pytest import outcomes, skipping
 from _pytest.config import (
@@ -21,10 +23,9 @@ from _pytest.outcomes import (
     Failed,
     Skipped,
     XFailed,
-    _with_exception as with_exception,
 )
 from _pytest.pytester import Pytester
-from _pytest.python import Function, Metafunc
+from _pytest.python import Function
 from _pytest.reports import CollectReport, TestReport
 
 try:
@@ -35,3 +36,18 @@ except ImportError:
     from _pytest.python import get_direct_param_fixture_func
 
     # pytest versions from 8.*.*
+    
+
+def with_exception(func):
+    """
+    Replacing the old _with_exception that was removed from pytest v9
+    """
+    try:
+        return func()
+    except skip.Exception as e:
+        raise
+    except AssertionError:
+        raise
+    except BaseException as e:
+        tb = sys.exc_info()[2]
+        raise e.with_traceback(tb)

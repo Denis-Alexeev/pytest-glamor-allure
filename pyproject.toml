@@ -1,12 +1,22 @@
+[project]
+name = "pytest_glamor_allure"
+version = "0.1.0"
+description = "Modified version. Added support for pytest v9"
+authors = [
+    {name = "CREATIVE181"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pytest (>=9.0.2,<10.0.0)",
+    "allure-python-commons-test (>=2.15.3,<3.0.0)",
+    "attrs (>=25.4.0,<26.0.0)",
+    "pytest-xdist (>=3.8.0,<4.0.0)",
+    "allure-pytest (>=2.15.3,<3.0.0)"
+]
+
+
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm"]
-
-[tool.setuptools_scm]
-write_to = "pytest_glamor_allure/_version.py"
-
-[tool.black]
-line-length = 79
-skip-string-normalization = true
-diff = true
-color = true
-check = true
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
