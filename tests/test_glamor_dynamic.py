@@ -9,8 +9,7 @@ from .matchers import has_after, has_before
 
 
 def test_fixture_as_func(glamor_pytester):
-    glamor_pytester.makepyfile(
-        """
+    glamor_pytester.makepyfile("""
         import pitest as pytest
         import glamor as allure
 
@@ -22,8 +21,7 @@ def test_fixture_as_func(glamor_pytester):
 
         def test_test(fixture):
             pass
-    """
-    )
+    """)
 
     glamor_pytester.runpytest()
     report = glamor_pytester.allure_report
@@ -41,8 +39,7 @@ def test_fixture_as_func(glamor_pytester):
 
 
 def test_fixture_as_method(glamor_pytester):
-    glamor_pytester.makepyfile(
-        """
+    glamor_pytester.makepyfile("""
         import pitest as pytest
         import glamor as allure
 
@@ -55,8 +52,7 @@ def test_fixture_as_method(glamor_pytester):
 
             def test_method(self, fixture):
                 pass
-        """
-    )
+        """)
 
     glamor_pytester.runpytest()
     report = glamor_pytester.allure_report
@@ -74,8 +70,7 @@ def test_fixture_as_method(glamor_pytester):
 
 
 def test_override_fixture_in_class(glamor_pytester):
-    glamor_pytester.makepyfile(
-        """
+    glamor_pytester.makepyfile("""
         import glamor as allure
         import pitest as pytest
 
@@ -93,8 +88,7 @@ def test_override_fixture_in_class(glamor_pytester):
 
             def test_inner(self, fixture):
                 pass
-        """
-    )
+        """)
 
     glamor_pytester.runpytest()
     report = glamor_pytester.allure_report
@@ -114,8 +108,7 @@ def test_override_fixture_in_class(glamor_pytester):
 
 
 def test_override_conftest_fixture(glamor_pytester):
-    glamor_pytester.makeconftest(
-        """
+    glamor_pytester.makeconftest("""
         import pytest
         import glamor as allure
 
@@ -124,10 +117,8 @@ def test_override_conftest_fixture(glamor_pytester):
             allure.dynamic.title.setup('Conftest setup')
             allure.dynamic.title.teardown('Conftest teardown')
             yield
-        """
-    )
-    glamor_pytester.makepyfile(
-        """
+        """)
+    glamor_pytester.makepyfile("""
         import pytest
         import glamor as allure
 
@@ -139,8 +130,7 @@ def test_override_conftest_fixture(glamor_pytester):
 
         def test_module(fixture):
             pass
-        """
-    )
+        """)
 
     glamor_pytester.runpytest()
     report = glamor_pytester.allure_report

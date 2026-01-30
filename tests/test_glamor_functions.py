@@ -61,8 +61,7 @@ class TestInclude:
         fixt_two = 'fixture_two'
         autouse_prefix = 'a' if {autouse, include_autouse} == {'True'} else ''
 
-        glamor_pytester.pytester.makepyfile(
-            f"""
+        glamor_pytester.pytester.makepyfile(f"""
             import glamor as allure
             import pitest as pytest
 
@@ -81,8 +80,7 @@ class TestInclude:
             def {test_name}({fixt_one}, {fixt_two}):
                 pass
 
-            """
-        )
+            """)
         prefix = f'[{scope[:1].upper()}{autouse_prefix}]'
         if place == 'before':
             prefixed_setup_one = f'{prefix} {setup}'
@@ -127,8 +125,7 @@ class TestInclude:
         fixt_name = 'fixt'
         test_name = 'test_in_class'
 
-        glamor_pytester.pytester.makepyfile(
-            f"""
+        glamor_pytester.pytester.makepyfile(f"""
             import pitest as pytest
             import glamor as allure
 
@@ -141,8 +138,7 @@ class TestInclude:
 
                 def {test_name}(self, fixt):
                     pass
-            """
-        )
+            """)
 
         glamor_pytester.runpytest()
         report = glamor_pytester.allure_report

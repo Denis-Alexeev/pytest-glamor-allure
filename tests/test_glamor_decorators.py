@@ -518,8 +518,7 @@ class TestOneFixtureOneTest:
         setup = 'setup title'
         tear = 'teardown title'
 
-        glamor_pytester.pytester.makepyfile(
-            f"""
+        glamor_pytester.pytester.makepyfile(f"""
             import glamor as allure
             import pitest as pytest
 
@@ -533,8 +532,7 @@ class TestOneFixtureOneTest:
                 @allure.title('{test_title}')
                 def {test_name}(self, {fixt_name}):
                     pass
-            """
-        )
+            """)
 
         glamor_pytester.runpytest()
         report = glamor_pytester.allure_report
