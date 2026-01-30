@@ -5,7 +5,7 @@ with open('README.md') as readme:
 
 classifiers = [
     'Framework :: Pytest',
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Intended Audience :: Developers',
     'License :: OSI Approved :: MIT License',
     'Natural Language :: Russian',
@@ -16,6 +16,7 @@ classifiers = [
     'Programming Language :: Python :: 3.11',
     'Programming Language :: Python :: 3.12',
     'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
     'Topic :: Software Development :: Testing',
     'Topic :: Software Development :: Quality Assurance',
 ]
