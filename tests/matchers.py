@@ -4,11 +4,7 @@ from typing import TYPE_CHECKING, Union
 
 from allure_commons_test.container import (
     has_after as allure_has_after,
-)
-from allure_commons_test.container import (
     has_before as allure_has_before,
-)
-from allure_commons_test.container import (
     has_fixture as has_section,
 )
 from hamcrest import has_key

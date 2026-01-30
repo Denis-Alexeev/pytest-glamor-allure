@@ -10,9 +10,9 @@ from allure_commons_test.container import has_container
 from allure_commons_test.report import has_test_case
 from hamcrest import assert_that
 
+from glamor.patches import PatchHelper, include_scope_in_title
 import glamor as allure
 import pitest as pytest
-from glamor.patches import PatchHelper, include_scope_in_title
 
 from .matchers import has_after, has_before
 
