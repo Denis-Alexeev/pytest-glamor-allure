@@ -1,8 +1,61 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm"]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pytest-glamor-allure"
+dynamic = ["version"]
+description = "Extends allure-pytest functionality"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+classifiers = [
+    'Framework :: Pytest',
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Natural Language :: Russian',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
+    'Programming Language :: Python :: 3.14',
+    'Topic :: Software Development :: Testing',
+    'Topic :: Software Development :: Quality Assurance',
+]
+
+dependencies = [
+    "allure-pytest<=2.15.3",
+    "allure-python-commons",
+    "pytest<=9.0.2",
+    "attrs<=25.4.0",
+]
+authors = [
+    { name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" }
+]
+maintainers = [
+    { name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" }
+]
+
+
+[project.entry-points.pytest11]
+pytest_glamor_allure = "pytest_glamor_allure.plugin"
+
+[project.urls]
+Repository = "https://github.com/Denis-Alexeev/pytest-glamor-allure"
+Issues = "https://github.com/Denis-Alexeev/pytest-glamor-allure/issues"
+Documentation = "https://denis-alexeev.github.io/pytest-glamor-allure/"
+Homepage = "https://github.com/Denis-Alexeev/pytest-glamor-allure"
+
+[tool.setuptools]
+packages = ["pytest_glamor_allure", "glamor"]
+py-modules = ["pitest"]
+include-package-data = true
 
 [tool.setuptools_scm]
-write_to = "pytest_glamor_allure/_version.py"
+version_file = "pytest_glamor_allure/_version.py"
 
 [tool.ruff]
 exclude = [

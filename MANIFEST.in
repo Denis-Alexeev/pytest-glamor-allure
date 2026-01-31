@@ -1,1 +1,10 @@
 prune assets
+prune tests
+prune .github
+prune pytest_glamor_allure.egg-info
+exclude _config.yml
+exclude .gitignore
+exclude CONTRIBUTING.md
+exclude MANIFEST.in
+exclude requirements.txt
+exclude tox.ini

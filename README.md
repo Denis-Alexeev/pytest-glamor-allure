@@ -1,6 +1,6 @@
 # pytest-glamor-allure
 
-pytest plugin extending allure behaviour
+pytest plugin extending allure behavior
 
 ---
 
@@ -266,7 +266,7 @@ logger.error("end message")
 
 `logging_allure_steps` should be called only once - during modules initialization. But who am I to restrict you?
 
-If you need you can turn off this behaviour by calling the function with `None` instead of `logging.Logger` instance.
+If you need you can turn off this behavior by calling the function with `None` instead of `logging.Logger` instance.
 
 ### What else?<a id="what_else"></a>
 
@@ -289,7 +289,7 @@ Also via 'glamor' module you get direct access to many objects from:
 
 ## Pleasant bonus 🎁<a id="pleasant_bonus"></a>
 
-Type `import pitest as pytest` instead of `import pytest` and get direct access to a bunch of objects from `pytest` and `_pytest` modules.
+Use `import pitest as pytest` instead of `import pytest` and get direct access to a bunch of objects from `pytest` and `_pytest` modules.
 
 ## How can I help?<a id="how_help"></a>
 
