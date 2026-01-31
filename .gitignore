@@ -132,3 +132,6 @@ dmypy.json
 # Pycharm IDE
 .idea/
 /pytest_glamor_allure/_version.py
+
+# VS Code settings
+.vscode/

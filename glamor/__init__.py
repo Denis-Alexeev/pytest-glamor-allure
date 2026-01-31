@@ -1,3 +1,7 @@
+from __future__ import annotations
+
+from contextlib import suppress
+
 from allure import (
     attach,
     attachment_type,
@@ -5,7 +9,7 @@ from allure import (
     description_html,
     epic,
     feature,
-    id,
+    id,  # noqa: A004
     issue,
     label,
     link,
@@ -20,7 +24,7 @@ from allure import (
     testcase,
 )
 from allure_commons import hookimpl, plugin_manager
-from allure_commons._allure import StepContext as step_ctx
+from allure_commons._allure import StepContext as step_ctx  # noqa: N813
 from allure_commons.model2 import (
     Attachment,
     ExecutableItem,
@@ -35,7 +39,10 @@ from allure_commons.model2 import (
     TestResultContainer,
     TestStepResult,
 )
-from allure_commons.types import LabelType as label_type, LinkType as link_type
+from allure_commons.types import (
+    LabelType as label_type,  # noqa: N813
+    LinkType as link_type,  # noqa: N813
+)
 from allure_commons.utils import func_parameters, md5, now, platform_label
 from allure_pytest.utils import (
     allure_description as get_description,
@@ -57,13 +64,13 @@ from allure_pytest.utils import (
     pytest_markers,
 )
 
-try:
-    from allure_pytest.utils import mark_to_str  # allure-pytest <= 2.14.3
-except ImportError:
-    pass
+with suppress(ImportError):
+    from allure_pytest.utils import mark_to_str  # allure-pytest >= 2.14.4
+
+from typing import TYPE_CHECKING
 
 from .patches import (
-    Dynamic as dynamic,
+    Dynamic as dynamic,  # noqa: N813
     include_scope_in_title,
     listener,
     logging_allure_steps,
@@ -72,15 +79,18 @@ from .patches import (
     title,
 )
 
+if TYPE_CHECKING:
+    from allure_pytest.listener import AllureListener
+
 del listener
 del reporter
 del pytest_config
 
 
-def __getattr__(name):
+def __getattr__(name: str):
     msg = f'{__name__} module does not contain "{name}" attribute'
 
-    def get_listener():
+    def get_listener() -> AllureListener | None:
         for plugin in plugin_manager._name2plugin.values():
             if plugin.__class__.__name__ == 'AllureListener':
                 return plugin
@@ -91,7 +101,7 @@ def __getattr__(name):
     if name == 'listener':
         return get_listener()
 
-    elif name in ('reporter', 'pytest_config'):
+    if name in ('reporter', 'pytest_config'):
         return getattr(get_listener(), name_to_attr[name], None)
 
     raise AttributeError(msg)

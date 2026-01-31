@@ -1,6 +1,8 @@
+from pathlib import Path
+
 from setuptools import setup
 
-with open('README.md') as readme:
+with Path('README.md').open() as readme:
     long_description = readme.read()
 
 classifiers = [
@@ -41,9 +43,9 @@ if __name__ == '__main__':
         long_description=long_description,
         long_description_content_type='text/markdown',
         author='Denis Alexeev',
-        author_email='github.com@alexeev.ws',
+        author_email='herr.alekseev.denis@gmail.com',
         maintainer='Denis Alexeev',
-        maintainer_email='github.com@alexeev.ws',
+        maintainer_email='herr.alekseev.denis@gmail.com',
         url='https://github.com/Denis-Alexeev/pytest-glamor-allure',
         packages=['pytest_glamor_allure', 'glamor'],
         py_modules=['glamor', 'pytest_glamor_allure', 'pitest'],
