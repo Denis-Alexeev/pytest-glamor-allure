@@ -291,6 +291,6 @@ Also via 'glamor' module you get direct access to many objects from:
 
 Type `import pitest as pytest` instead of `import pytest` and get direct access to a bunch of objects from `pytest` and `_pytest` modules.
 
-## How can I help?<a name="how_help"></a>
+## How can I help?<a id="how_help"></a>
 
 Your contribution is highly appreciated. Please read [CONTRIBUTING.md](https://github.com/Denis-Alexeev/pytest-glamor-allure/blob/master/CONTRIBUTING.md) before you start.

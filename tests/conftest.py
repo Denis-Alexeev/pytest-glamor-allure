@@ -1,4 +1,4 @@
-from typing import Optional
+from __future__ import annotations
 
 from allure_commons_test.report import AllureReport
 
@@ -10,11 +10,14 @@ pytest_plugins = 'pytester'
 class GlamorPytester:
     def __init__(self, pytester: pytest.Pytester):
         self.pytester = pytester
-        self.allure_report: Optional[AllureReport] = None
+        self.allure_report: AllureReport | None = None
 
     def runpytest(self, *args, **kwargs):
         result = self.pytester.runpytest(
-            '--alluredir', str(self.pytester.path), *args, **kwargs
+            '--alluredir',
+            str(self.pytester.path),
+            *args,
+            **kwargs,
         )
         self.allure_report = AllureReport(str(self.pytester.path))
         return result
@@ -27,5 +30,5 @@ class GlamorPytester:
 
 
 @pytest.fixture
-def glamor_pytester(pytester: pytest.Pytester):
+def glamor_pytester(pytester: pytest.Pytester) -> GlamorPytester:
     return GlamorPytester(pytester)

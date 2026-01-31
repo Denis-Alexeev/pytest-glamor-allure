@@ -1,6 +1,7 @@
-"""
-Here we test `glamor.include_scope_in_title` and
-`glamor.logging_allure_steps` functions.
+"""The test goal.
+
+Here we test `glamor.include_scope_in_title
+and `glamor.logging_allure_steps` functions.
 """
 
 import io
@@ -36,13 +37,13 @@ class TestInclude:
     @pytest.fixture
     def monkey_patchhelper(self):
         p = PatchHelper
-        backup_add_autouse = getattr(p, '_add_autouse')
-        backup_add_scope_after_name = getattr(p, '_add_scope_after_name')
-        backup_add_scope_before_name = getattr(p, '_add_scope_before_name')
+        backup_add_autouse = p._add_autouse
+        backup_add_scope_after_name = p._add_scope_after_name
+        backup_add_scope_before_name = p._add_scope_before_name
         yield
-        setattr(p, '_add_autouse', backup_add_autouse)
-        setattr(p, '_add_scope_after_name', backup_add_scope_after_name)
-        setattr(p, '_add_scope_before_name', backup_add_scope_before_name)
+        p._add_autouse = backup_add_autouse
+        p._add_scope_after_name = backup_add_scope_after_name
+        p._add_scope_before_name = backup_add_scope_before_name
         include_scope_in_title.called = False
 
     def test_scope_autouse(
@@ -91,7 +92,8 @@ class TestInclude:
             prefixed_tear_one = f'{tear} {prefix}'
             prefixed_fixt_two = f'{fixt_two} [F]'
         else:
-            raise RuntimeError('Unknown "place" parameter')
+            msg = 'Unknown "place" parameter'
+            raise RuntimeError(msg)
 
         glamor_pytester.runpytest()
         report = glamor_pytester.allure_report
@@ -150,7 +152,8 @@ class TestInclude:
         elif place == 'after':
             fixt_title = f'{fixt_name} {prefix}'
         else:
-            raise RuntimeError('Unknown "place" parameter')
+            msg = 'Unknown "place" parameter'
+            raise RuntimeError(msg)
 
         assert_that(
             report,
@@ -193,7 +196,7 @@ class TestLogging:
     @pytest.mark.parametrize('times', (1, 2), ids=('once', 'twice'))
     def test_logging_step_can_be_on_or_off(self, logger_stream, switch, times):
         logger, stream = logger_stream
-        for i in range(times):
+        for _ in range(times):
             allure.logging_allure_steps(logger if switch == 'on' else None)
 
         expected_messages = []

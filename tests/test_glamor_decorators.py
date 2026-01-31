@@ -1,5 +1,8 @@
-"""Here we test that `glamor.tittle.setup` and `glamor.title.teardown`
-decorators behave as expected."""
+"""The test goal.
+
+Here we test that `glamor.tittle.setup` and `glamor.title.teardown`
+decorators behave as expected.
+"""
 
 from allure_commons_test.container import has_container
 from allure_commons_test.report import has_test_case
@@ -29,7 +32,7 @@ class TestOneFixtureOneTest:
         fixt_name = 'simple_yield_fixture'
         setup_name = 'FANCY SETUP NAME'
         glamor_pytester.pytester.makepyfile(
-            """
+            f"""
             import pitest as pytest
             import glamor as allure
 
@@ -41,13 +44,7 @@ class TestOneFixtureOneTest:
             def {test_name}({fixt_name}):
                 pass
 
-            """.format(
-                test_name=test_name,
-                fixt_name=fixt_name,
-                setup_name=setup_name,
-                scope=scope,
-                autouse=autouse,
-            )
+            """,
         )
 
         glamor_pytester.runpytest()
@@ -74,7 +71,7 @@ class TestOneFixtureOneTest:
         fixt_name = 'simple_return_fixture'
         setup_name = 'FANCY SETUP NAME'
         glamor_pytester.pytester.makepyfile(
-            """
+            f"""
             import pitest as pytest
             import glamor as allure
 
@@ -86,13 +83,7 @@ class TestOneFixtureOneTest:
             def {test_name}({fixt_name}):
                 pass
 
-            """.format(
-                test_name=test_name,
-                fixt_name=fixt_name,
-                setup_name=setup_name,
-                scope=scope,
-                autouse=autouse,
-            )
+            """,
         )
 
         glamor_pytester.runpytest()
@@ -118,7 +109,7 @@ class TestOneFixtureOneTest:
         fixt_name = 'simple_yield_fixture'
         teardown_name = 'FANCY TEARDOWN NAME'
         glamor_pytester.pytester.makepyfile(
-            """
+            f"""
             import pitest as pytest
             import glamor as allure
 
@@ -130,13 +121,7 @@ class TestOneFixtureOneTest:
             def {test_name}({fixt_name}):
                 pass
 
-            """.format(
-                test_name=test_name,
-                fixt_name=fixt_name,
-                teardown_name=teardown_name,
-                scope=scope,
-                autouse=autouse,
-            )
+            """,
         )
 
         glamor_pytester.runpytest()
@@ -163,7 +148,7 @@ class TestOneFixtureOneTest:
         fixt_name = 'simple_return_fixture'
         teardown_name = 'FANCY TEARDOWN NAME'
         glamor_pytester.pytester.makepyfile(
-            """
+            f"""
             import pitest as pytest
             import glamor as allure
 
@@ -175,13 +160,7 @@ class TestOneFixtureOneTest:
             def {test_name}({fixt_name}):
                 pass
 
-            """.format(
-                test_name=test_name,
-                fixt_name=fixt_name,
-                teardown_name=teardown_name,
-                scope=scope,
-                autouse=autouse,
-            )
+            """,
         )
 
         glamor_pytester.runpytest()
@@ -206,7 +185,11 @@ class TestOneFixtureOneTest:
 
     @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
     def test_setup_hidden_yield(
-        self, glamor_pytester, scope, autouse, with_name
+        self,
+        glamor_pytester,
+        scope,
+        autouse,
+        with_name,
     ):
         test_name = 'test_simple'
         fixt_name = 'simple_yield_fixture'
@@ -230,7 +213,7 @@ class TestOneFixtureOneTest:
                 scope=scope,
                 autouse=autouse,
                 setup_name=f"'{setup}', " if with_name else '',
-            )
+            ),
         )
 
         glamor_pytester.runpytest()
@@ -254,7 +237,11 @@ class TestOneFixtureOneTest:
 
     @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
     def test_setup_hidden_return(
-        self, glamor_pytester, scope, autouse, with_name
+        self,
+        glamor_pytester,
+        scope,
+        autouse,
+        with_name,
     ):
         test_name = 'test_simple'
         fixt_name = 'simple_yield_fixture'
@@ -278,7 +265,7 @@ class TestOneFixtureOneTest:
                 scope=scope,
                 autouse=autouse,
                 setup_name=f"'{setup}', " if with_name else '',
-            )
+            ),
         )
 
         glamor_pytester.runpytest()
@@ -301,7 +288,11 @@ class TestOneFixtureOneTest:
 
     @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
     def test_teardown_hidden_yield(
-        self, glamor_pytester, scope, autouse, with_name
+        self,
+        glamor_pytester,
+        scope,
+        autouse,
+        with_name,
     ):
         test_name = 'test_simple'
         fixt_name = 'simple_yield_fixture'
@@ -325,7 +316,7 @@ class TestOneFixtureOneTest:
                 scope=scope,
                 autouse=autouse,
                 tear=f"'{tear}', " if with_name else '',
-            )
+            ),
         )
 
         glamor_pytester.runpytest()
@@ -349,7 +340,11 @@ class TestOneFixtureOneTest:
 
     @pytest.mark.parametrize('with_name', (True, False), ids=with_name_ids)
     def test_teardown_hidden_return(
-        self, glamor_pytester, scope, autouse, with_name
+        self,
+        glamor_pytester,
+        scope,
+        autouse,
+        with_name,
     ):
         test_name = 'test_simple'
         fixt_name = 'simple_yield_fixture'
@@ -373,7 +368,7 @@ class TestOneFixtureOneTest:
                 scope=scope,
                 autouse=autouse,
                 tear=f"'{tear}', " if with_name else '',
-            )
+            ),
         )
 
         glamor_pytester.runpytest()
@@ -400,7 +395,11 @@ class TestOneFixtureOneTest:
 
     @pytest.mark.parametrize('order', decor_orders)
     def test_setup_and_tear_yield(
-        self, glamor_pytester, scope, autouse, order
+        self,
+        glamor_pytester,
+        scope,
+        autouse,
+        order,
     ):
         test_name = 'test_simple'
         fixt_name = 'simple_yield_fixture'
@@ -413,25 +412,19 @@ class TestOneFixtureOneTest:
         order_map = {'f': fixture_decor, 's': setup_decor, 't': teardown_decor}
 
         glamor_pytester.pytester.makepyfile(
-            """
+            f"""
             import pitest as pytest
             import glamor as allure
 
-            {decor_0}
-            {decor_1}
-            {decor_2}
+            {order_map[order[0]]}
+            {order_map[order[1]]}
+            {order_map[order[2]]}
             def {fixt_name}():
                 yield 777
 
             def {test_name}({fixt_name}):
                 pass
-            """.format(
-                test_name=test_name,
-                fixt_name=fixt_name,
-                decor_0=order_map[order[0]],
-                decor_1=order_map[order[1]],
-                decor_2=order_map[order[2]],
-            )
+            """,
         )
 
         glamor_pytester.runpytest()
@@ -457,7 +450,11 @@ class TestOneFixtureOneTest:
 
     @pytest.mark.parametrize('order', decor_orders)
     def test_setup_and_tear_return(
-        self, glamor_pytester, scope, autouse, order
+        self,
+        glamor_pytester,
+        scope,
+        autouse,
+        order,
     ):
         test_name = 'test_simple'
         fixt_name = 'simple_yield_fixture'
@@ -470,26 +467,20 @@ class TestOneFixtureOneTest:
         order_map = {'f': fixture_decor, 's': setup_decor, 't': teardown_decor}
 
         glamor_pytester.pytester.makepyfile(
-            """
+            f"""
             import pitest as pytest
             import glamor as allure
 
-            {decor_0}
-            {decor_1}
-            {decor_2}
+            {order_map[order[0]]}
+            {order_map[order[1]]}
+            {order_map[order[2]]}
             def {fixt_name}():
                 return 777
 
             def {test_name}({fixt_name}):
                 pass
 
-            """.format(
-                test_name=test_name,
-                fixt_name=fixt_name,
-                decor_0=order_map[order[0]],
-                decor_1=order_map[order[1]],
-                decor_2=order_map[order[2]],
-            )
+            """,
         )
 
         glamor_pytester.runpytest()

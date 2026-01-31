@@ -1,5 +1,8 @@
-"""Here we test that `glamor.dynamic.title.setup` and
-`glamor.dynamic.title.teardown` work as expected"""
+"""The test goal.
+
+Here we test that `glamor.dynamic.title.setup`
+and `glamor.dynamic.title.teardown` work as expected
+"""
 
 from allure_commons_test.container import has_container
 from allure_commons_test.report import has_test_case

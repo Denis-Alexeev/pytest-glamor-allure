@@ -1,6 +1,5 @@
 import sys
 
-from pytest import *
 from _pytest import outcomes, skipping
 from _pytest.config import (
     Config,
@@ -22,19 +21,16 @@ from _pytest.outcomes import Exit, Failed, Skipped, XFailed
 from _pytest.pytester import Pytester
 from _pytest.python import Function, Metafunc
 from _pytest.reports import CollectReport, TestReport
-import pytest
+from pytest import *  # noqa: PT013
+from pytest import version_tuple as pytest_version_tuple  # noqa: PT013
 
-try:
+if int(pytest_version_tuple[0]) < 8:  # noqa: PLR2004 Magic value used in comparison
     from _pytest.fixtures import get_direct_param_fixture_func
-
     # pytest versions up to 7.*.*
-except ImportError:
+else:
     from _pytest.python import get_direct_param_fixture_func
-
     # pytest versions from 8.*.*
 
-
-if (
-    tuple(map(int, pytest.__version__.split('.')[:2]))[0] < 9
-):  # pytest versions up to 9.*.*
+if int(pytest_version_tuple[0]) < 9:  # noqa: PLR2004 Magic value used in comparison
     from _pytest.outcomes import _with_exception as with_exception
+    # this function was deleted from pytest in version 9
