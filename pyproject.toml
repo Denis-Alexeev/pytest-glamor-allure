@@ -97,7 +97,7 @@ from-first = true
 combine-as-imports = true
 
 [tool.coverage.run]
-source = ["pytest_glamor_allure", "glamor", "glamor.patches", "pitest"]
+source = ["./pytest_glamor_allure", "./glamor", "pitest"]
 branch = true
 parallel = true
 patch = ["subprocess"]
