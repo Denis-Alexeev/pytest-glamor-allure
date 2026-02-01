@@ -98,13 +98,13 @@ combine-as-imports = true
 
 [tool.coverage.run]
 source = ["./pytest_glamor_allure", "./glamor", "pitest"]
-branch = true
+branch = false
 parallel = true
 patch = ["subprocess"]
 omit = ["tests/*", "pytest_glamor_allure/_version.py"]
 relative_files = true
 
 [tool.coverage.report]
-fail_under = 0
+fail_under = 90
 show_missing = true
 exclude_also = ["if TYPE_CHECKING:"]
