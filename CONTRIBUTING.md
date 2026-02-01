@@ -30,6 +30,8 @@ Not all lint violations can be fixed automatically. Something can be fixed only 
 ## Test regression execution
 For the tests execution all supported Python versions must be installed in your OS.  
 The list of the supported Python versions can be found in `tox.ini`.  
+
+Test regression execution is being done together with a coverage check.  
   
 Tests execution (as in CI/CD):
 ```bash
