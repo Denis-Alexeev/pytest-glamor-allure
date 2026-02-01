@@ -32,11 +32,9 @@ dependencies = [
     "pytest<=9.0.2",
     "attrs<=25.4.0",
 ]
-authors = [
-    { name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" }
-]
+authors = [{ name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" }]
 maintainers = [
-    { name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" }
+    { name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" },
 ]
 
 
@@ -58,42 +56,37 @@ include-package-data = true
 version_file = "pytest_glamor_allure/_version.py"
 
 [tool.ruff]
-exclude = [
-    "venv*",
-    ".tox",
-    ".eggs",
-    "pytest_glamor_allure/_version.py"
-]
+exclude = ["venv*", ".tox", ".eggs", "pytest_glamor_allure/_version.py"]
 line-length = 79
 target-version = "py38"
 
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "Q000", # Single quotes found but double quotes preferred
-    "D100",  # Missing docstring in public module
-    "D104", # Missing docstring in public package
-    "D107", # Missing docstring in __init__
+    "Q000",   # Single quotes found but double quotes preferred
+    "D100",   # Missing docstring in public module
+    "D104",   # Missing docstring in public package
+    "D107",   # Missing docstring in __init__
     "ANN204", # Missing return type annotation for special method __init__
-    "ANN202",  # Missing return type annotation for private function
-    "SLF001",  # Private member accessed
+    "ANN202", # Missing return type annotation for private function
+    "SLF001", # Private member accessed
 ]
 
 [tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["F401"]
 "pitest.py" = ["F401", "F403", "F405"]
 "tests/**" = [
-    "S101",  # Use of `assert` detected
-    "PLR2004",  # Magic value used in comparison
+    "S101",    # Use of `assert` detected
+    "PLR2004", # Magic value used in comparison
     "ANN201",  # Missing return type annotation for public function
     "ANN001",  # Missing type annotation for function argument
     "ANN002",  # Missing type annotation for `*args`
     "ANN003",  # Missing type annotation for `**kwargs`
-    "D101",  # Missing docstring in public class
-    "D102",  # Missing docstring in public method
-    "D103",  # Missing docstring in public function
+    "D101",    # Missing docstring in public class
+    "D102",    # Missing docstring in public method
+    "D103",    # Missing docstring in public function
     "ARG002",  # Unused method argument
-    "PLR0913",  # Too many arguments in function definition
+    "PLR0913", # Too many arguments in function definition
 ]
 
 [tool.ruff.format]
@@ -102,3 +95,16 @@ quote-style = "preserve"
 [tool.ruff.lint.isort]
 from-first = true
 combine-as-imports = true
+
+[tool.coverage.run]
+source = ["./pytest_glamor_allure", "./glamor", "pitest"]
+branch = false
+parallel = true
+patch = ["subprocess"]
+omit = ["tests/*", "pytest_glamor_allure/_version.py"]
+relative_files = true
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+exclude_also = ["if TYPE_CHECKING:"]
