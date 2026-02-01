@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 import os
 import re
 
 from allure_commons.model2 import (
-    TestResultContainer,
+    TestResultContainer,  # type: ignore[reportAssignmentType]
 )
 import attr
 
@@ -20,12 +20,13 @@ if TYPE_CHECKING:
         TestAfterResult,
         TestBeforeResult,
     )
+    from allure_commons.reporter import AllureReporter
 
 GLAMOR_TESTING_MODE = os.environ.get('GLAMOR_TESTING_MODE', False)  # noqa: PLW1508
 
 
 @attr.s
-class TestResultContainer(TestResultContainer):
+class TestResultContainer(TestResultContainer):  # type: ignore[reportGeneralTypeIssues]
     """Recreate the class from allure lib.
 
     Allure uses "asdict" function from "attrs" lib to discover which
@@ -40,13 +41,13 @@ class TestResultContainer(TestResultContainer):
         afters: list[TestAfterResult] = []
 
     glamor_setup_name: str | None = attr.ib(default=None)
-    glamor_setup_hidden: bool = attr.ib(default=False)
-    glamor_teardown_name: str = attr.ib(default=None)
-    glamor_teardown_hidden: bool = attr.ib(default=False)
-    glamor_scope: str = attr.ib(default=None)
-    glamor_autouse: bool = attr.ib(default=False)
-    glamor_afters: list[TestAfterResult] = attr.ib(factory=list)
-    glamor_befores: list[TestBeforeResult] = attr.ib(factory=list)
+    glamor_setup_hidden: bool | None = attr.ib(default=False)
+    glamor_teardown_name: str | None = attr.ib(default=None)
+    glamor_teardown_hidden: bool | None = attr.ib(default=False)
+    glamor_scope: str | None = attr.ib(default=None)
+    glamor_autouse: bool | None = attr.ib(default=False)
+    glamor_afters: list[TestAfterResult] | None = attr.ib(factory=list)
+    glamor_befores: list[TestBeforeResult] | None = attr.ib(factory=list)
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -74,7 +75,10 @@ def pytest_fixture_post_finalizer(fixturedef: pytest.FixtureDef) -> None:
         return
 
     container: TestResultContainer
-    container = allure.reporter._items.get(container_uuid)
+    container = cast(
+        'TestResultContainer',
+        cast('AllureReporter', allure.reporter)._items.get(container_uuid),
+    )
     if container is None:
         return
 
@@ -155,7 +159,7 @@ class GlamorReportLogger:
 
         scope_before = ''
         scope_after = ''
-        scope = f'[{container.glamor_scope[:1].upper()}{autouse}]'
+        scope = f'[{cast("str", container.glamor_scope)[:1].upper()}{autouse}]'
         if PatchHelper.i_should_add_scope_before():
             scope_before = scope + ' '
         elif PatchHelper.i_should_add_scope_after():
@@ -224,8 +228,11 @@ class GlamorReportLogger:
         :param scope_before: scope and autouse letters before title
         :param scope_after: scope and autouse letters after title
         """
-        glamor_name = container.glamor_teardown_name
-        tear_name_is_str = isinstance(container.glamor_teardown_name, str)
+        glamor_name: str = cast('str', container.glamor_teardown_name)
+        tear_name_is_str: bool = isinstance(
+            container.glamor_teardown_name,
+            str,
+        )
         for after in container.afters:
             if container.glamor_teardown_name and tear_name_is_str:
                 new_name = re.sub('.*(?=::)', glamor_name, after.name, count=1)
@@ -254,7 +261,7 @@ class GlamorReportLogger:
         container.glamor_scope = None
         container.glamor_autouse = None
 
-        if not GLAMOR_TESTING_MODE:
+        if not GLAMOR_TESTING_MODE:  # pragma: no cover
             container.glamor_afters = None
             container.glamor_befores = None
 

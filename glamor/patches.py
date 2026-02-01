@@ -11,17 +11,11 @@ if TYPE_CHECKING:
     from typing import Literal
 
     from _pytest.fixtures import (
-        Config,
+        Config,  # type: ignore[reportPrivateImportUsage]
         FixtureDef,
-        FixtureFunctionMarker,
         FixtureManager,
     )
     from allure_pytest.listener import AllureListener, AllureReporter
-
-    class FixtureFunction:
-        """Typing helper for fixture functions."""
-
-        _pytestfixturefunction: FixtureFunctionMarker
 
 
 class PatchHelper:
@@ -52,17 +46,17 @@ class PatchHelper:
         cls._add_autouse = True
 
     @classmethod
-    def i_should_add_scope_before(cls) -> bool:
+    def i_should_add_scope_before(cls) -> bool | None:
         """Check whether scope should be added to titles or not."""
         return cls._add_scope_before_name
 
     @classmethod
-    def i_should_add_scope_after(cls) -> bool:
+    def i_should_add_scope_after(cls) -> bool | None:
         """Check whether scope should be added to titles or not."""
         return cls._add_scope_after_name
 
     @classmethod
-    def i_should_add_autouse(cls) -> bool:
+    def i_should_add_autouse(cls) -> bool | None:
         """Check whether autouse should be added to titles or not."""
         return cls._add_autouse
 
@@ -78,21 +72,11 @@ class PatchHelper:
     @classmethod
     def fixture_has_autouse(cls, fixturedef: FixtureDef) -> bool:
         """Check whether fixture is autouse or not."""
-        autos = cls.fixt_mgr._nodeid_autousenames.get(fixturedef.baseid, [])
-        return fixturedef.argname in autos
-
-    @staticmethod
-    def __raise_if_not_fixture(
-        fixture: FixtureFunction,
-    ) -> FixtureFunctionMarker:
-        error_message = (
-            'dynamic.title.setup and dynamic.title.teardown '
-            'must be used only inside fixture'
+        autos = cast('FixtureManager', cls.fixt_mgr)._nodeid_autousenames.get(
+            fixturedef.baseid,
+            [],
         )
-        try:
-            return fixture._pytestfixturefunction
-        except AttributeError:
-            raise RuntimeError(error_message) from None
+        return fixturedef.argname in autos
 
     @classmethod
     def get_real_function_of_fixture(
@@ -102,7 +86,10 @@ class PatchHelper:
         """Get real function object of fixture from current frame."""
         fixture_frame = cast('FrameType', current_frame.f_back)
         fixture_name = fixture_frame.f_code.co_name
-        fixturedefs = cls.fixt_mgr._arg2fixturedefs.get(fixture_name, [])
+        fixturedefs = cast(
+            'FixtureManager',
+            cls.fixt_mgr,
+        )._arg2fixturedefs.get(fixture_name, [])
         if not fixturedefs:
             msg = f'there is no fixture named "{fixture_name}"'
             raise RuntimeError(msg)
@@ -117,7 +104,7 @@ class PatchHelper:
         raise RuntimeError(msg)
 
 
-class Title(Callable):
+class Title(Callable):  # type: ignore[reportGeneralTypeIssues]
     """Replacement for allure.title."""
 
     def __call__(self, test_title: str) -> Callable[[Callable], Callable]:
@@ -180,7 +167,7 @@ class DynamicFixtureTitle:
 
         :param test_title: title for test to set dynamically
         """
-        return allure_dynamic.title(test_title)
+        return allure_dynamic.title(test_title)  # type: ignore[reportReturnType]
 
     @staticmethod
     def setup(
@@ -196,7 +183,9 @@ class DynamicFixtureTitle:
         :param setup_title: title to use in setup for this fixture
         :param hidden: whether setup should be displayed or not
         """
-        func = PatchHelper.get_real_function_of_fixture(inspect.currentframe())
+        func = PatchHelper.get_real_function_of_fixture(
+            cast('FrameType', inspect.currentframe()),
+        )
         if setup_title:
             func.__glamor_setup_display_name__ = setup_title
         if isinstance(hidden, bool):
@@ -216,7 +205,9 @@ class DynamicFixtureTitle:
         :param teardown_title: title to use in teardown for this fixture
         :param hidden: whether teardown should be displayed or not
         """
-        func = PatchHelper.get_real_function_of_fixture(inspect.currentframe())
+        func = PatchHelper.get_real_function_of_fixture(
+            cast('FrameType', inspect.currentframe()),
+        )
         if teardown_title:
             func.__glamor_teardown_display_name__ = teardown_title
         if isinstance(hidden, bool):
@@ -226,7 +217,7 @@ class DynamicFixtureTitle:
 class Dynamic(allure_dynamic):
     """Replacement for allure.dynamic."""
 
-    title = DynamicFixtureTitle()
+    title = DynamicFixtureTitle() # type: ignore[reportAssignmentType]
 
 
 def include_scope_in_title(
