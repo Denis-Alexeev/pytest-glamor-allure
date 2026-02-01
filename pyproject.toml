@@ -102,6 +102,7 @@ branch = true
 parallel = true
 patch = ["subprocess"]
 omit = ["tests/*", "pytest_glamor_allure/_version.py"]
+relative_files = true
 
 [tool.coverage.report]
 fail_under = 0
