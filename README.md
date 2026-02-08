@@ -13,6 +13,7 @@ pytest plugin extending allure behavior
 [![PyPI](https://img.shields.io/pypi/v/pytest-glamor-allure)](https://pypi.org/project/pytest-glamor-allure/)
 [![PyPI - Status](https://img.shields.io/pypi/status/pytest-glamor-allure)](https://pypi.org/project/pytest-glamor-allure/)
 [![Downloads](https://static.pepy.tech/badge/pytest-glamor-allure)](https://pepy.tech/project/pytest-glamor-allure)
+[![PyPI Downloads](https://static.pepy.tech/personalized-badge/pytest-glamor-allure?period=monthly&units=INTERNATIONAL_SYSTEM&left_color=GREY&right_color=GREEN&left_text=downloads%2Fmonth)](https://pepy.tech/projects/pytest-glamor-allure)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 
