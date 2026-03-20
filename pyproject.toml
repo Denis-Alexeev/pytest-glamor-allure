@@ -30,7 +30,7 @@ dependencies = [
     "allure-pytest<=2.15.3",
     "allure-python-commons",
     "pytest<=9.0.2",
-    "attrs<=25.4.0",
+    "attrs<=26.1.0",
 ]
 authors = [{ name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" }]
 maintainers = [
