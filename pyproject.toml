@@ -27,7 +27,7 @@ classifiers = [
 ]
 
 dependencies = [
-    "allure-pytest<=2.15.3",
+    "allure-pytest<=2.16.0",
     "allure-python-commons",
     "pytest<=9.0.2",
     "attrs<=25.4.0",
