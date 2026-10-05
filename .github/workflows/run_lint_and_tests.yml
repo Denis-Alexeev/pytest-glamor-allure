@@ -29,12 +29,6 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - python-version: "3.8"
-            tox-env: py38-pytest8
-
-          - python-version: "3.9"
-            tox-env: py39-pytest84
-
           - python-version: "3.10"
             tox-env: py310-pytest84
           - python-version: "3.10"
