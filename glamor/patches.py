@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from types import FrameType, MethodType
-from typing import TYPE_CHECKING, Callable, cast
+from typing import TYPE_CHECKING, cast
 import inspect
 import logging
 
