@@ -6,7 +6,7 @@ decorators behave as expected.
 
 from allure_commons_test.container import has_container
 from allure_commons_test.report import has_test_case
-from hamcrest import assert_that, not_
+from hamcrest import assert_that, matches_regexp, not_
 
 import pitest as pytest
 
@@ -333,7 +333,7 @@ class TestOneFixtureOneTest:
                     has_before(fixt_name),
                     not_(has_after()),
                     not_(has_glamor_afters(tear)),
-                    has_glamor_afters(f'{fixt_name}::0'),
+                    has_glamor_afters(matches_regexp(f'^{fixt_name}::\\d+$')),
                 ),
             ),
         )

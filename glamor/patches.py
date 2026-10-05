@@ -73,11 +73,7 @@ class PatchHelper:
     @classmethod
     def fixture_has_autouse(cls, fixturedef: FixtureDef) -> bool:
         """Check whether fixture is autouse or not."""
-        autos = cast('FixtureManager', cls.fixt_mgr)._nodeid_autousenames.get(
-            fixturedef.baseid,
-            [],
-        )
-        return fixturedef.argname in autos
+        return bool(fixturedef._autouse)
 
     @classmethod
     def get_real_function_of_fixture(

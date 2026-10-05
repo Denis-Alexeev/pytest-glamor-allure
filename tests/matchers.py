@@ -28,15 +28,18 @@ def has_glamor_befores(name: str | None = None, *matchers: Matcher):
     if name is None:
         if matchers:
             raise matchers_with_none
-        return just_has_glamor(befores)
+        return just_has_glamor("befores")
     return has_section(f'{glamor}_{befores}', name, *matchers)
 
 
-def has_glamor_afters(name: str | None = None, *matchers: Matcher):
+def has_glamor_afters(
+    name: str | Matcher[str] | None = None,
+    *matchers: Matcher,
+):
     if name is None:
         if matchers:
             raise matchers_with_none
-        return just_has_glamor(afters)
+        return just_has_glamor("afters")
     return has_section(f'{glamor}_{afters}', name, *matchers)
 
 

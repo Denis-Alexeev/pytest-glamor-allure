@@ -126,6 +126,10 @@ class GlamorReportLogger:
             yield
             return
 
+        container.afters[:] = [
+            a for a in container.afters if a.status is not None
+        ]
+
         scope_before, scope_after = self.handle_scope(container)
 
         self.handle_hidden_setup(container)
@@ -240,9 +244,9 @@ class GlamorReportLogger:
             if (
                 len(container.afters) == 1
                 and isinstance(after.name, str)
-                and after.name.endswith('::0')
+                and re.search(r'::\d+$', after.name)
             ):
-                after.name = after.name[:-3]
+                after.name = re.sub(r'::\d+$', '', after.name)
             if isinstance(after.name, str):
                 after.name = scope_before + after.name + scope_after
 
