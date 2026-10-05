@@ -63,13 +63,15 @@ target-version = "py38"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "Q000",   # Single quotes found but double quotes preferred
-    "D100",   # Missing docstring in public module
-    "D104",   # Missing docstring in public package
-    "D107",   # Missing docstring in __init__
-    "ANN204", # Missing return type annotation for special method __init__
-    "ANN202", # Missing return type annotation for private function
-    "SLF001", # Private member accessed
+    "Q000",    # Single quotes found but double quotes preferred
+    "D100",    # Missing docstring in public module
+    "D104",    # Missing docstring in public package
+    "D107",    # Missing docstring in __init__
+    "ANN204",  # Missing return type annotation for special method __init__
+    "ANN202",  # Missing return type annotation for private function
+    "SLF001",  # Private member accessed
+    "CPY001",  # missing-copyright-notice
+    "PLR0917", # too-many-positional-arguments
 ]
 
 [tool.ruff.lint.per-file-ignores]
