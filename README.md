@@ -5,7 +5,7 @@ pytest plugin extending allure behavior
 ---
 
 ![](https://github.com/Denis-Alexeev/pytest-glamor-allure/actions/workflows/python-publish.yml/badge.svg)
-![](https://github.com/Denis-Alexeev/pytest-glamor-allure/actions/workflows/run_lint_and_tests.yml/badge.svg)
+![](https://github.com/Denis-Alexeev/pytest-glamor-allure/actions/workflows/tests.yml/badge.svg)
 ![](https://github.com/Denis-Alexeev/pytest-glamor-allure/actions/workflows/codeql-analysis.yml/badge.svg)
 [![codecov](https://codecov.io/github/Denis-Alexeev/pytest-glamor-allure/branch/master/graph/badge.svg?token=YEYBTP7BT3)](https://codecov.io/github/Denis-Alexeev/pytest-glamor-allure)
 
