@@ -1,15 +1,15 @@
-from __future__ import annotations
+__author__ = 'Denis Alexeev'
+__license__ = "MIT"
 
 from collections.abc import Callable
 from types import FrameType, MethodType
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, Literal, cast
 import inspect
 import logging
 
 from allure import dynamic as allure_dynamic, title as allure_title
 
 if TYPE_CHECKING:
-    from typing import Literal
 
     from _pytest.fixtures import (
         Config,  # type: ignore[reportPrivateImportUsage]
@@ -25,7 +25,7 @@ class PatchHelper:
     _add_scope_before_name: bool | None = None
     _add_scope_after_name: bool | None = None
     _add_autouse: bool | None = None
-    fixt_mgr: FixtureManager | None = None
+    fixt_mgr: "FixtureManager | None" = None
     logger: logging.Logger | None = None
     level: int = 21
 
@@ -71,13 +71,9 @@ class PatchHelper:
         return func
 
     @classmethod
-    def fixture_has_autouse(cls, fixturedef: FixtureDef) -> bool:
+    def fixture_has_autouse(cls, fixturedef: "FixtureDef") -> bool:
         """Check whether fixture is autouse or not."""
-        autos = cast('FixtureManager', cls.fixt_mgr)._nodeid_autousenames.get(
-            fixturedef.baseid,
-            [],
-        )
-        return fixturedef.argname in autos
+        return bool(fixturedef._autouse)
 
     @classmethod
     def get_real_function_of_fixture(
@@ -275,6 +271,6 @@ def logging_allure_steps(
 
 
 title = Title()
-pytest_config: Config | None = None
-listener: AllureListener | None = None
-reporter: AllureReporter | None = None
+pytest_config: "Config | None" = None
+listener: "AllureListener | None" = None
+reporter: "AllureReporter | None" = None

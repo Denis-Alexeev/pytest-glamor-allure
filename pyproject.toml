@@ -27,7 +27,7 @@ classifiers = [
 dependencies = [
     "allure-pytest<=2.16.2",
     "allure-python-commons",
-    "pytest<=9.0.2",
+    "pytest<=9.1.1",
     "attrs<=26.1.0",
 ]
 authors = [{ name = "Denis Alexeev", email = "herr.alekseev.denis@gmail.com" }]
@@ -69,7 +69,6 @@ ignore = [
     "ANN202",  # Missing return type annotation for private function
     "SLF001",  # Private member accessed
     "CPY001",  # missing-copyright-notice
-    "PLR0917", # too-many-positional-arguments
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -87,6 +86,7 @@ ignore = [
     "D103",    # Missing docstring in public function
     "ARG002",  # Unused method argument
     "PLR0913", # Too many arguments in function definition
+    "PLR0917", # too-many-positional-arguments
 ]
 
 [tool.ruff.format]

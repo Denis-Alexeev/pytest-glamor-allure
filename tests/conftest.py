@@ -1,4 +1,5 @@
-from __future__ import annotations
+__author__ = 'Denis Alexeev'
+__license__ = "MIT"
 
 from allure_commons_test.report import AllureReport
 

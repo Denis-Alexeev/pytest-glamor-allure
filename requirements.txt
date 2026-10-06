@@ -1,7 +1,7 @@
 allure-pytest<=2.16.2
 allure-python-commons-test
 attrs<=26.1.0
-pytest<=9.0.2
+pytest<=9.1.1
 tox
 pytest-xdist
 ruff
