@@ -21,26 +21,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get PR number
-        id: pr
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-          RUN_ID: ${{ github.event.workflow_run.id }}
-        run: |
-          PR_NUMBER=$(gh api \
-            -H "Accept: application/vnd.github+json" \
-            "/repos/${REPO}/actions/runs/${RUN_ID}/pulls" \
-            --jq '.[0].number')
-
-          if [ -z "$PR_NUMBER" ]; then
-            echo "Could not determine PR number"
-            exit 1
-          fi
-
-          echo "PR number: $PR_NUMBER"
-          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
-
       - name: Download coverage XML
         uses: actions/download-artifact@v4
         with:
@@ -49,6 +29,36 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Download PR number
+        uses: actions/download-artifact@v4
+        with:
+          name: pr-number
+          path: .
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Read PR number
+        id: pr
+        run: |
+          PR_NUMBER=$(cat pr-number)
+
+          if ! [[ "$PR_NUMBER" =~ ^[0-9]+$ ]]; then
+            echo "Invalid PR number: $PR_NUMBER"
+            exit 1
+          fi
+
+          echo "PR number: $PR_NUMBER"
+          echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+
+      - name: Show downloaded files
+        run: |
+          echo "PR: ${{ steps.pr.outputs.number }}"
+          echo "Coverage:"
+          ls -lh coverage.xml
+          echo "PR number:"
+          cat pr-number
 
       - name: Add coverage comment to PR
         uses: MishaKav/pytest-coverage-comment@v1
