@@ -1,6 +1,7 @@
-from __future__ import annotations
+__author__ = 'Denis Alexeev'
+__license__ = "MIT"
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from allure_commons_test.container import (
     has_after as allure_has_after,
@@ -10,7 +11,6 @@ from allure_commons_test.container import (
 from hamcrest import has_key
 
 if TYPE_CHECKING:
-    from typing import Literal
 
     from hamcrest.core.matcher import Matcher
 
@@ -24,7 +24,7 @@ def just_has_glamor(name: Literal["befores", "afters"]):
     return has_key(f'{glamor}_{name}')
 
 
-def has_glamor_befores(name: str | None = None, *matchers: Matcher):
+def has_glamor_befores(name: str | None = None, *matchers: "Matcher"):
     if name is None:
         if matchers:
             raise matchers_with_none
@@ -33,8 +33,8 @@ def has_glamor_befores(name: str | None = None, *matchers: Matcher):
 
 
 def has_glamor_afters(
-    name: str | Matcher[str] | None = None,
-    *matchers: Matcher,
+    name: "str | Matcher[str] | None" = None,
+    *matchers: "Matcher",
 ):
     if name is None:
         if matchers:
@@ -43,7 +43,7 @@ def has_glamor_afters(
     return has_section(f'{glamor}_{afters}', name, *matchers)
 
 
-def has_before(name: str | None = None, *matchers: Matcher):
+def has_before(name: str | None = None, *matchers: "Matcher"):
     if name is None:
         if matchers:
             raise matchers_with_none
@@ -51,7 +51,7 @@ def has_before(name: str | None = None, *matchers: Matcher):
     return allure_has_before(name, *matchers)
 
 
-def has_after(name: str | None = None, *matchers: Matcher):
+def has_after(name: str | None = None, *matchers: "Matcher"):
     if name is None:
         if matchers:
             raise matchers_with_none

@@ -1,4 +1,5 @@
-from __future__ import annotations
+__author__ = 'Denis Alexeev'
+__license__ = "MIT"
 
 from typing import TYPE_CHECKING, cast
 import os
@@ -37,8 +38,8 @@ class TestResultContainer(TestResultContainer):  # type: ignore[reportGeneralTyp
     """
 
     if TYPE_CHECKING:
-        befores: list[TestBeforeResult] = []
-        afters: list[TestAfterResult] = []
+        befores: list["TestBeforeResult"] = []
+        afters: list["TestAfterResult"] = []
 
     glamor_setup_name: str | None = attr.ib(default=None)
     glamor_setup_hidden: bool | None = attr.ib(default=False)
@@ -46,8 +47,8 @@ class TestResultContainer(TestResultContainer):  # type: ignore[reportGeneralTyp
     glamor_teardown_hidden: bool | None = attr.ib(default=False)
     glamor_scope: str | None = attr.ib(default=None)
     glamor_autouse: bool | None = attr.ib(default=False)
-    glamor_afters: list[TestAfterResult] | None = attr.ib(factory=list)
-    glamor_befores: list[TestBeforeResult] | None = attr.ib(factory=list)
+    glamor_afters: list["TestAfterResult"] | None = attr.ib(factory=list)
+    glamor_befores: list["TestBeforeResult"] | None = attr.ib(factory=list)
 
 
 @pytest.hookimpl(hookwrapper=True)
@@ -107,7 +108,7 @@ class GlamorReportLogger:
     """Allure plugin to handle glamor data in report containers."""
 
     @allure.hookimpl(tryfirst=True, hookwrapper=True)
-    def start_step(self, title: str) -> Generator[None, None, None]:
+    def start_step(self, title: str) -> "Generator[None, None, None]":
         """Log step titles if logger is configured."""
         if PatchHelper.logger:
             PatchHelper.logger.log(PatchHelper.level, title)
@@ -117,7 +118,7 @@ class GlamorReportLogger:
     def report_container(
         self,
         container: TestResultContainer,
-    ) -> Generator[None, None, None]:
+    ) -> "Generator[None, None, None]":
         """Fetch stored in container data and handle.
 
         :param container: represents allure fixture json as python object

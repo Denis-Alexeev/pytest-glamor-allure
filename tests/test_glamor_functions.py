@@ -4,6 +4,9 @@ Here we test `glamor.include_scope_in_title
 and `glamor.logging_allure_steps` functions.
 """
 
+__author__ = 'Denis Alexeev'
+__license__ = "MIT"
+
 import io
 import logging
 

@@ -6,6 +6,9 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -14,7 +17,7 @@ jobs:
       - name: Setup Python 3.14
         uses: actions/setup-python@v6
         with:
-          python-version: 3.14
+          python-version: '3.14'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel setuptools_scm
@@ -32,27 +35,38 @@ jobs:
           - python-version: "3.10"
             tox-env: py310-pytest84
           - python-version: "3.10"
-            tox-env: py310-pytest9
+            tox-env: py310-pytest90
+          - python-version: "3.10"
+            tox-env: py310-pytest91
 
           - python-version: "3.11"
             tox-env: py311-pytest84
           - python-version: "3.11"
-            tox-env: py311-pytest9
+            tox-env: py311-pytest90
+          - python-version: "3.11"
+            tox-env: py311-pytest91
 
           - python-version: "3.12"
             tox-env: py312-pytest84
           - python-version: "3.12"
-            tox-env: py312-pytest9
+            tox-env: py312-pytest90
+          - python-version: "3.12"
+            tox-env: py312-pytest91
 
           - python-version: "3.13"
             tox-env: py313-pytest84
           - python-version: "3.13"
-            tox-env: py313-pytest9
+            tox-env: py313-pytest90
+          - python-version: "3.13"
+            tox-env: py313-pytest91
 
           - python-version: "3.14"
             tox-env: py314-pytest84
           - python-version: "3.14"
-            tox-env: py314-pytest9
+            tox-env: py314-pytest90
+          - python-version: "3.14"
+            tox-env: py314-pytest91
+
     steps:
       - uses: actions/checkout@v6
 
@@ -112,9 +126,10 @@ jobs:
           name: coverage-html
           path: htmlcov/
           retention-days: 7
-      - name: Add coverage comment to PR
-        uses: MishaKav/pytest-coverage-comment@v1
+
+      - name: Upload coverage XML
+        uses: actions/upload-artifact@v4
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          pytest-xml-coverage-path: coverage.xml
-          default-branch: master
+          name: coverage-xml
+          path: coverage.xml
+          retention-days: 1

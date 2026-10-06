@@ -4,6 +4,9 @@ Here we test that `glamor.tittle.setup` and `glamor.title.teardown`
 decorators behave as expected.
 """
 
+__author__ = 'Denis Alexeev'
+__license__ = "MIT"
+
 from allure_commons_test.container import has_container
 from allure_commons_test.report import has_test_case
 from hamcrest import assert_that, matches_regexp, not_

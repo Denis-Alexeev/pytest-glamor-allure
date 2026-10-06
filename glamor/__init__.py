@@ -1,4 +1,5 @@
-from __future__ import annotations
+__author__ = 'Denis Alexeev'
+__license__ = "MIT"
 
 from contextlib import suppress
 
@@ -65,7 +66,10 @@ from allure_pytest.utils import (
 )
 
 with suppress(ImportError):
-    from allure_pytest.utils import mark_to_str  # allure-pytest >= 2.14.4
+    # allure-pytest >= 2.14.4
+    from allure_pytest.utils import (
+        mark_to_str,  # type: ignore[ReportAttributeAccessIssue]
+    )
 
 from typing import TYPE_CHECKING
 
@@ -90,7 +94,7 @@ del pytest_config
 def __getattr__(name: str):
     msg = f'{__name__} module does not contain "{name}" attribute'
 
-    def get_listener() -> AllureListener | None:
+    def get_listener() -> "AllureListener | None":
         for plugin in plugin_manager._name2plugin.values():
             if plugin.__class__.__name__ == 'AllureListener':
                 return plugin
