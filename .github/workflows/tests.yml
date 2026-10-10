@@ -18,6 +18,7 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: '3.15'
+          allow-prereleases: true
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel setuptools_scm
@@ -64,6 +65,7 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
 
       - name: Install tox + tox-gh-actions
         run: |
@@ -90,6 +92,7 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: '3.15'
+          allow-prereleases: true
       - name: Install tox
         run: python -m pip install --upgrade pip tox tox-gh-actions
       - name: Download coverage data
