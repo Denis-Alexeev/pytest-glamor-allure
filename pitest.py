@@ -25,10 +25,3 @@ from _pytest.pytester import Pytester
 from _pytest.python import Function, Metafunc, get_direct_param_fixture_func
 from _pytest.reports import CollectReport, TestReport
 from pytest import *  # type: ignore[reportWildcardImportFromLibrary] # noqa: PT013
-from pytest import version_tuple as pytest_version_tuple  # noqa: PT013
-
-if int(pytest_version_tuple[0]) < 9:  # noqa: PLR2004 Magic value used in comparison
-    from _pytest.outcomes import (
-        _with_exception as with_exception,  # type: ignore[ReportAttributeAccessIssue]
-    )
-    # this function was deleted from pytest in version 9
